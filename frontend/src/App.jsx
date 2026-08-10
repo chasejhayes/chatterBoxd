@@ -1,13 +1,61 @@
-import { useState } from 'react'
+import axios from "axios"
+import { useEffect } from "react"
+import './style.css'
+
+  const Header = () => (
+    <div id="header">
+      <div>ChatterBOXD</div>
+      <div>My Profile</div>
+      <div>All Films</div>
+      <div>All Users</div>
+      <div>
+        <input type="search"></input>
+      </div>
+    </div>
+  )
+
+  const Profile_Header = () => (
+    <div id="profile_header">
+      <div id="image">Profile Image Here</div>
+      <div>User Name</div> 
+      <div>Total Films: 0</div>
+      <div>Bio HERE</div>
+      <button>Edit Bio</button> 
+    </div>
+  )
 
 
 function App() {
-  const [count, setCount] = useState(0)
+
+  useEffect(() => {
+    axios.get('http://localhost:3001/api/movies')
+      .then((response) => {
+        console.log(response.data)
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+
+  }, [])
+
+
 
   return (
-    <div>This is working?</div>
+    <div>
+      <Header />
+      <div id="body">
+        <Profile_Header />
+        <div id="body_right">
+          <button>Add Films</button>
+          <button>Sort By:</button>
+          <button>Filter By Rating</button>
+          <input type="search"></input>
+          <div>FILMS DISPLAYED HERE</div>
+        </div>
+      </div>
+    </div>
   )
-  
+
 }
 
 export default App

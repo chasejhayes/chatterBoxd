@@ -1,0 +1,16 @@
+#header {
+    background-color: lightgray;
+    display: flex;
+    gap: 15px;
+    justify-content: space-between;
+    padding: 25px
+}
+
+#body {
+    background-color: mintcream;
+    width: 100vw;
+    min-height: 100svh;
+    box-sizing: border-box;
+    display: flex;
+
+}
