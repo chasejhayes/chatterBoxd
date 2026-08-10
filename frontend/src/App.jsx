@@ -24,6 +24,20 @@ import './style.css'
     </div>
   )
 
+  const Body_Right = ({display}) => (
+    <div id="body_right">
+          <div id="films_header">My Films</div>
+          <div id="films_UI">
+            <button>Add Films</button>
+            <button>Sort By:</button>
+            <button>Filter By Rating</button>
+          </div>
+          <input type="search"></input>
+          <div>{display}</div>
+        </div>
+
+  )
+
 
 function App() {
 
@@ -45,13 +59,7 @@ function App() {
       <Header />
       <div id="body">
         <Profile_Header />
-        <div id="body_right">
-          <button>Add Films</button>
-          <button>Sort By:</button>
-          <button>Filter By Rating</button>
-          <input type="search"></input>
-          <div>FILMS DISPLAYED HERE</div>
-        </div>
+        <Body_Right />
       </div>
     </div>
   )

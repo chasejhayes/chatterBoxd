@@ -14,3 +14,14 @@
     display: flex;
 
 }
+
+#body_right{
+    padding-left: 25px;
+    display: flex;
+    flex-direction: column;
+}
+
+#films_header{
+    font-size: 25px;
+
+}
