@@ -24,6 +24,8 @@ import './style.css'
     </div>
   )
 
+  // At some point, the hardcoded userMovies is being wiped and replaced by the single added film from the dropdown
+
   const MovieDisplay = ({userMovies}) => {
     console.log(userMovies)
     
@@ -64,7 +66,7 @@ import './style.css'
     const handleAddFilms = (e) => {
       let id = Number(e.target.value);
       let newMovie = movies.find(movie => movie.id === id)
-      return setUserMovies(...userMovies, newMovie)
+      return setUserMovies([...userMovies, newMovie])
     }
 
 
