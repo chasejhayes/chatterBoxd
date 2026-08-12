@@ -59,14 +59,20 @@ import './style.css'
         </div>
   )
 
-  const Form_Popup = ({showForm}) => {
+  const Form_Popup = ({ showForm, onSubmit, newRating, setNewRating, newReview, setNewReview  }) => {
     if (showForm === true)
     return (
       <div>
-        <div>IT WORKED</div>
        <dialog open>
-          <p>Hello! This is your dialog.</p>
-          <button >Close</button>
+          <form method="dialog" id="user_review" onSubmit={onSubmit}>
+            <label>Review:
+              <input value={newReview} onChange={(e) => setNewReview(e.target.value)}/>
+            </label>
+            <label>Rating:
+              <input value={newRating} onChange={(e) => setNewRating(e.target.value)}/>
+            </label>
+            <button>Submit</button>
+          </form>
         </dialog>
       </div>
 
@@ -105,6 +111,8 @@ function App() {
   const [movies, setMovies] = useState([]);
   const [userMovies, setUserMovies] = useState([])
   const [showForm, setShowForm] = useState(false)
+  const [newRating, setNewRating] = useState("")
+  const [newReview, setNewReview] = useState("")
 
   useEffect(() => {
     axios.get('http://localhost:3001/api/movies')
