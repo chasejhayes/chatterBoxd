@@ -81,7 +81,7 @@ import './style.css'
 
   // formpopup only runs when 'true', onChange needs to change state to true/false
 
-  const Add_Films = ({movies, setUserMovies, userMovies,showForm, setShowForm}) => {
+  const Add_Films = ({movies, setUserMovies, userMovies,showForm, setShowForm, onSubmit, newRating, setNewRating, newReview, setNewReview, setCurrentId}) => {
 
     const handleAddFilms = (e) => {
       let id = Number(e.target.value);
@@ -92,15 +92,20 @@ import './style.css'
     const handleShowForm = () => {
       return setShowForm(true)
     }
+    const handleSetId = (e) => {
+      let id = Number(e.target.value)
+      console.log('working')
+      return setCurrentId(id)
+    }
 
     return (
       <div>
-        <select name="movies" id="movies" onChange={(e) => {handleAddFilms(e); handleShowForm()}}>
+        <select name="movies" id="movies" onChange={(e) => {handleAddFilms(e); handleShowForm(); handleSetId(e)}}>
           {movies.map(item => 
             <option key={item.id} value={item.id}>{item.title}</option>
           )}
         </select>
-        <Form_Popup showForm={showForm}/>
+        <Form_Popup showForm={showForm} newRating={newRating} setNewRating={setNewRating} newReview={newReview} setNewReview={setNewReview} onSubmit={onSubmit}/>
       </div>
     )
   }
@@ -113,6 +118,7 @@ function App() {
   const [showForm, setShowForm] = useState(false)
   const [newRating, setNewRating] = useState("")
   const [newReview, setNewReview] = useState("")
+  const [currentId, setCurrentId] = useState("")
 
   useEffect(() => {
     axios.get('http://localhost:3001/api/movies')
@@ -125,6 +131,30 @@ function App() {
 
   }, [])
 
+  function addUserRatingAndReview(e){
+    e.preventDefault()
+    let id = currentId;
+
+    let patchRequest = 
+    {
+      rating: newRating,
+      review: newReview,
+      id: currentId
+    }
+
+    axios.patch(
+      `http://localhost:3001/api/movies/${id}`, patchRequest
+    )
+    .then(res => {
+      console.log(`http://localhost:3001/api/movies/${id}`)
+      setUserMovies(userMovies.map(item => 
+        item.id === id
+        ? res.data
+        : item
+      ))
+    })
+  }
+
   
 
 
@@ -133,7 +163,7 @@ function App() {
       <Header />
       <div id="body">
         <Profile_Header />
-        <Add_Films movies={movies} setUserMovies={setUserMovies} userMovies={userMovies} showForm={showForm} setShowForm={setShowForm}/>
+        <Add_Films movies={movies} setUserMovies={setUserMovies} userMovies={userMovies} showForm={showForm} setShowForm={setShowForm} newRating={newRating} setNewRating={setNewRating} newReview={newReview} setNewReview={setNewReview} onSubmit={addUserRatingAndReview} currentId={currentId} setCurrentId={setCurrentId}/>
         <Body_Right userMovies={userMovies}/>
       </div>
     </div>
