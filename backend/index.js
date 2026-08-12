@@ -22,12 +22,13 @@ app.patch('/api/movies/:id', (req, res) => {
     const id = req.params.id
     console.log(id)
     movieDB = movieDB.map(item => 
-        item.id === id
+        item.id == id
         ? {...item, ...req.body}
         : item
     )
+    console.log(movieDB)
     let updatedMovies = movieDB.find(item =>
-        item.id === id
+        item.id == id
     )
     console.log(updatedMovies)
     res.json(updatedMovies)
