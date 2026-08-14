@@ -38,6 +38,7 @@ import './style.css'
           <p>{item.description}</p>
           <p>Average Rating: {item.averageRating}</p>
           <p>Reviews: {item.reviews}</p>
+          <p>{item.review}</p>
         </li>
         )}
       </ul>
@@ -139,19 +140,15 @@ function App() {
     {
       rating: newRating,
       review: newReview,
-      id: currentId
     }
 
     axios.patch(
       `http://localhost:3001/api/movies/${id}`, patchRequest
     )
     .then(res => {
-      console.log(`http://localhost:3001/api/movies/${id}`)
-      setUserMovies(userMovies.map(item => 
-        item.id === id
-        ? res.data
-        : item
-      ))
+      console.log(res)
+      console.log(userMovies)
+      setUserMovies([...userMovies, res.data])
     })
   }
 
