@@ -84,26 +84,25 @@ import './style.css'
 
   const Add_Films = ({movies, setUserMovies, userMovies,showForm, setShowForm, onSubmit, newRating, setNewRating, newReview, setNewReview, setCurrentId}) => {
 
-    const handleAddFilms = (e) => {
-      let id = Number(e.target.value);
-      let newMovie = movies.find(movie => movie.id === id)
-      return userMovies.includes(newMovie)
-      ? console.log('error')
-      : setUserMovies([...userMovies, newMovie]), console.log("not working")
-    }
+    // const handleAddFilms = (e) => {
+    //   let id = Number(e.target.value);
+    //   let newMovie = movies.find(movie => movie.id === id)
+    //   return userMovies.includes(newMovie)
+    //   ? console.log('error')
+    //   : setUserMovies([...userMovies, newMovie]), console.log("not working")
+    // }
     
     const handleShowForm = () => {
       return setShowForm(true)
     }
     const handleSetId = (e) => {
       let id = Number(e.target.value)
-      console.log('working')
       return setCurrentId(id)
     }
 
     return (
       <div>
-        <select name="movies" id="movies" onChange={(e) => {handleAddFilms(e); handleShowForm(); handleSetId(e)}}>
+        <select name="movies" id="movies" onChange={(e) => { handleShowForm(); handleSetId(e)}}>
           {movies.map(item => 
             <option key={item.id} value={item.id}>{item.title}</option>
           )}
@@ -134,8 +133,8 @@ function App() {
 
   }, [])
 
-  function addUserRatingAndReview(){
-    // e.preventDefault()
+  function addUserRatingAndReview(e){
+    e.preventDefault()
     let id = currentId;
 
     let patchRequest = 
@@ -152,6 +151,9 @@ function App() {
       console.log(userMovies)
       setUserMovies([...userMovies, res.data])
     })
+    setNewRating("")
+    setNewReview("")
+    setShowForm(false)
   
   }
 
