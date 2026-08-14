@@ -87,7 +87,9 @@ import './style.css'
     const handleAddFilms = (e) => {
       let id = Number(e.target.value);
       let newMovie = movies.find(movie => movie.id === id)
-      return setUserMovies([...userMovies, newMovie])
+      return userMovies.includes(newMovie)
+      ? console.log('error')
+      : setUserMovies([...userMovies, newMovie]), console.log("not working")
     }
     
     const handleShowForm = () => {
@@ -132,8 +134,8 @@ function App() {
 
   }, [])
 
-  function addUserRatingAndReview(e){
-    e.preventDefault()
+  function addUserRatingAndReview(){
+    // e.preventDefault()
     let id = currentId;
 
     let patchRequest = 
@@ -150,6 +152,7 @@ function App() {
       console.log(userMovies)
       setUserMovies([...userMovies, res.data])
     })
+  
   }
 
   
