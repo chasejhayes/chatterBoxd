@@ -26,7 +26,7 @@ const Profile_Header = () => (
 
 
 
-const MovieDisplay = ({ userMovies }) => {
+const MovieDisplay = ({ userMovies, deleteMovies}) => {
   return (
     <div>
       <ul>
@@ -39,6 +39,7 @@ const MovieDisplay = ({ userMovies }) => {
             <p>Average Rating: {item.averageRating}</p>
             <p>Reviews: {item.reviews}</p>
             <p>{item.review}</p>
+            <button onClick={() => {deleteMovies(item.id)}}>Delete</button>
           </li>
         )}
       </ul>
@@ -47,7 +48,7 @@ const MovieDisplay = ({ userMovies }) => {
 }
 
 
-const Body_Right = ({ userMovies }) => (
+const Body_Right = ({ userMovies, deleteMovies, setCurrentId }) => (
   <div id="body_right">
     <div id="films_header">My Films</div>
     <div id="films_UI">
@@ -56,7 +57,7 @@ const Body_Right = ({ userMovies }) => (
       <button>Filter By Rating</button>
     </div>
     <input type="search"></input>
-    <MovieDisplay userMovies={userMovies} />
+    <MovieDisplay userMovies={userMovies} deleteMovies={deleteMovies} setCurrentId={setCurrentId}/>
   </div>
 )
 
@@ -81,31 +82,21 @@ const Form_Popup = ({ showForm, onSubmit, newRating, setNewRating, newReview, se
 }
 
 
-const Add_Films = ({ movies, showForm, setShowForm, onSubmit, newRating, setNewRating, newReview, setNewReview, setCurrentId, userMovies, currentId }) => {
+const Add_Films = ({ movies, showForm, setShowForm, onSubmit, newRating, setNewRating, newReview, setNewReview, setCurrentId, userMovies }) => {
 
   
   const handleShowForm = (id) => {
-  // if (currentId === 1) {
-  //     return console.log(`current id is ${currentId} and is working`)
-  //   }
-  //   console.log(userMovies)
-  //   return setShowForm(true)
     if (userMovies.some((x) => x.id == id)) {
       return alert("Film already in list")
     } else {
-      console.log(`current id is ${currentId}`)
       return setShowForm(true)
     }
   }
   const handleSetId = (e) => {
     let id = Number(e.target.value)
-    console.log(`id has been set to ${id}`)
     setCurrentId(id)
-    console.log(currentId)
     handleShowForm(id)
   }
-
-//  the problem is that userMovies isnt updated by the time 
 
   return (
     <div>
@@ -160,7 +151,17 @@ function App() {
     setNewRating("")
     setNewReview("")
     setShowForm(false)
+    setCurrentId('')
 
+  }
+
+  function deleteMovies(id){
+  
+
+    axios.delete(`http://localhost:3001/api/movies/${id}`)
+    .then(() => {
+      setUserMovies(userMovies.filter(item => item.id !== id))
+    })
   }
 
 
@@ -171,8 +172,8 @@ function App() {
       <Header />
       <div id="body">
         <Profile_Header />
-        <Add_Films movies={movies} setUserMovies={setUserMovies} userMovies={userMovies} showForm={showForm} setShowForm={setShowForm} newRating={newRating} setNewRating={setNewRating} newReview={newReview} setNewReview={setNewReview} onSubmit={addUserRatingAndReview} currentId={currentId} setCurrentId={setCurrentId} />
-        <Body_Right userMovies={userMovies} />
+        <Add_Films movies={movies} setUserMovies={setUserMovies} userMovies={userMovies} showForm={showForm} setShowForm={setShowForm} newRating={newRating} setNewRating={setNewRating} newReview={newReview} setNewReview={setNewReview} onSubmit={addUserRatingAndReview} setCurrentId={setCurrentId}/>
+        <Body_Right userMovies={userMovies}  deleteMovies={deleteMovies} setCurrentId={setCurrentId} />
       </div>
     </div>
   )

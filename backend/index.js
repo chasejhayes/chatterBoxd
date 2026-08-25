@@ -32,6 +32,19 @@ app.patch('/api/movies/:id', (req, res) => {
  
 })
 
+app.delete('/api/movies/:id', (req, res) => {
+    const id = req.params.id
+    movieDB = movieDB.map(item => 
+        item.id == id
+        ? {...item, review: '', rating: ''}
+        : item
+    )
+    let deletedMovie = movieDB.find(item =>
+        item.id == id
+    )
+    res.json(deletedMovie)
+})
+
 const PORT = 3001
 
 app.listen((PORT), () => {
