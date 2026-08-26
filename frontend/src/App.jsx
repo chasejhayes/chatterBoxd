@@ -26,11 +26,20 @@ const Profile_Header = () => (
 
 
 
-const MovieDisplay = ({ userMovies, deleteMovies}) => {
+const MovieDisplay = ({ userMovies, deleteMovies, toggleFilter, filter }) => {
+
+  let displayType = userMovies
+
+    if(toggleFilter === true){
+      displayType = filter
+      console.log(filter)
+      console.log(displayType)
+    } 
+
   return (
     <div>
       <ul>
-        {userMovies.map((item) =>
+        {displayType.map((item) =>
           <li key={item.id}>
             <h2>{item.title}</h2>
             <p>Directed By: {item.director}</p>
@@ -38,8 +47,8 @@ const MovieDisplay = ({ userMovies, deleteMovies}) => {
             <p>{item.description}</p>
             <p>Average Rating: {item.averageRating}</p>
             <p>Reviews: {item.reviews}</p>
-            <p>{item.review}</p>
-            <button onClick={() => {deleteMovies(item.id)}}>Delete</button>
+            <p>{item.review}{item.rating}</p>
+            <button onClick={() => { deleteMovies(item.id) }}>Delete</button>
           </li>
         )}
       </ul>
@@ -47,17 +56,51 @@ const MovieDisplay = ({ userMovies, deleteMovies}) => {
   )
 }
 
+// all films are under UserMovies
+// filtering 
 
-const Body_Right = ({ userMovies, deleteMovies, setCurrentId }) => (
+
+const FilterDropdown = ( {userMovies, filter, setFilter, toggleFilter, setToggleFilter} ) => {
+  function filterByRating(e){
+  
+  let rating = Number(e.target.value)
+  if (rating > 0){
+    setToggleFilter(true)
+  } else if (rating === 0){
+    setToggleFilter(false)
+  }
+  let filtered = userMovies.filter( (movie) => movie.rating === rating)
+  console.log(filtered)
+  console.log(toggleFilter)
+  return setFilter(filtered)
+
+ 
+}
+  return(
+    <div>
+      <select name="filter" id="filter"  onChange={ (e) => {filterByRating(e)}}>
+        <option value="0">Select a filter</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+      </select>
+    </div>
+  )
+}
+
+
+const Body_Right = ({ userMovies, deleteMovies, setCurrentId, setUserMovies, toggleFilter, setToggleFilter, filter, setFilter }) => (
   <div id="body_right">
     <div id="films_header">My Films</div>
     <div id="films_UI">
       <button>Add Films</button>
       <button>Sort By:</button>
-      <button>Filter By Rating</button>
+      <FilterDropdown userMovies={userMovies} setUserMovies={setUserMovies} toggleFilter={toggleFilter} setToggleFilter={setToggleFilter} filter={filter} setFilter={setFilter}/>
     </div>
     <input type="search"></input>
-    <MovieDisplay userMovies={userMovies} deleteMovies={deleteMovies} setCurrentId={setCurrentId}/>
+    <MovieDisplay userMovies={userMovies} deleteMovies={deleteMovies} setCurrentId={setCurrentId} toggleFilter={toggleFilter} setToggleFilter={setToggleFilter} filter={filter} setFilter={setFilter} />
   </div>
 )
 
@@ -84,7 +127,7 @@ const Form_Popup = ({ showForm, onSubmit, newRating, setNewRating, newReview, se
 
 const Add_Films = ({ movies, showForm, setShowForm, onSubmit, newRating, setNewRating, newReview, setNewReview, setCurrentId, userMovies }) => {
 
-  
+
   const handleShowForm = (id) => {
     if (userMovies.some((x) => x.id == id)) {
       return alert("Film already in list")
@@ -100,7 +143,7 @@ const Add_Films = ({ movies, showForm, setShowForm, onSubmit, newRating, setNewR
 
   return (
     <div>
-      <select name="movies" id="movies" onChange={(e) => { handleSetId(e)}}>
+      <select name="movies" id="movies" onChange={(e) => { handleSetId(e) }}>
         <option value="">Please select a film</option>
         {movies.map(item =>
           <option key={item.id} value={item.id}>{item.title}</option>
@@ -112,14 +155,20 @@ const Add_Films = ({ movies, showForm, setShowForm, onSubmit, newRating, setNewR
 }
 
 
+
 function App() {
 
   const [movies, setMovies] = useState([]);
-  const [userMovies, setUserMovies] = useState([])
+  const [userMovies, setUserMovies] = useState([{ id: 1, title: "The Blue Gardenia", director: "Fritz Land", releaseDate: 1953, description: "Deeply distraught...", averageRating: 0, reviews: [], rating: 1 },
+  { id: 2, title: "Night and the City", director: "Jules Dassin", releaseDate: 1950, description: "Londoner Harry Fabian (Richard Widmark)...", averageRating: 0, reviews: [], rating: 2, review: "" },
+  { id: 3, title: "Niagara", director: "Henry Hathaway", releaseDate: 1953, description: "Rose Loomis (Marilyn Monroe) and her older...", averageRating: 0, reviews: [], rating: 3 }])
   const [showForm, setShowForm] = useState(false)
   const [newRating, setNewRating] = useState("")
   const [newReview, setNewReview] = useState("")
   const [currentId, setCurrentId] = useState("")
+  const [toggleFilter, setToggleFilter] = useState(false)
+  const [filter, setFilter] = useState('')
+  
 
   useEffect(() => {
     axios.get('http://localhost:3001/api/movies')
@@ -155,13 +204,13 @@ function App() {
 
   }
 
-  function deleteMovies(id){
-  
+  function deleteMovies(id) {
+
 
     axios.delete(`http://localhost:3001/api/movies/${id}`)
-    .then(() => {
-      setUserMovies(userMovies.filter(item => item.id !== id))
-    })
+      .then(() => {
+        setUserMovies(userMovies.filter(item => item.id !== id))
+      })
   }
 
 
@@ -172,8 +221,8 @@ function App() {
       <Header />
       <div id="body">
         <Profile_Header />
-        <Add_Films movies={movies} setUserMovies={setUserMovies} userMovies={userMovies} showForm={showForm} setShowForm={setShowForm} newRating={newRating} setNewRating={setNewRating} newReview={newReview} setNewReview={setNewReview} onSubmit={addUserRatingAndReview} setCurrentId={setCurrentId}/>
-        <Body_Right userMovies={userMovies}  deleteMovies={deleteMovies} setCurrentId={setCurrentId} />
+        <Add_Films movies={movies} setUserMovies={setUserMovies} userMovies={userMovies} showForm={showForm} setShowForm={setShowForm} newRating={newRating} setNewRating={setNewRating} newReview={newReview} setNewReview={setNewReview} onSubmit={addUserRatingAndReview} setCurrentId={setCurrentId} />
+        <Body_Right userMovies={userMovies} deleteMovies={deleteMovies} setCurrentId={setCurrentId} setUserMovies={setUserMovies} toggleFilter={toggleFilter} setToggleFilter={setToggleFilter} filter={filter} setFilter={setFilter}/>
       </div>
     </div>
   )
