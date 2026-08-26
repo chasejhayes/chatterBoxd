@@ -98,7 +98,7 @@ const SortDropdown = ({ toggleSort, setToggleSort, sort, setSort, setUserMovies,
 
     } else if (selected === "rating") {
       console.log("setting rating")
-      return setUserMovies(userMovies.sort((a, b) => b.rating - a.rating))
+      setUserMovies(userMovies.toSorted((a, b) => b.rating - a.rating))
     }
   }
 
