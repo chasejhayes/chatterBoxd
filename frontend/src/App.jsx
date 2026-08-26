@@ -30,18 +30,18 @@ const MovieDisplay = ({ userMovies, deleteMovies, toggleFilter, filter }) => {
 
   let displayType = userMovies
 
-    if(toggleFilter === true){
-      displayType = filter
-      console.log(filter)
-      console.log(displayType)
-    } 
+  if (toggleFilter === true) {
+    displayType = filter
+    console.log(filter)
+    console.log(displayType)
+  }
 
   return (
     <div>
       <ul>
         {displayType.map((item) =>
           <li key={item.id}>
-            <h2>{item.title}</h2>
+            <h2>{item.title} {item.rating}</h2>
             <p>Directed By: {item.director}</p>
             <h3>Description</h3>
             <p>{item.description}</p>
@@ -56,29 +56,28 @@ const MovieDisplay = ({ userMovies, deleteMovies, toggleFilter, filter }) => {
   )
 }
 
-// all films are under UserMovies
-// filtering 
 
 
-const FilterDropdown = ( {userMovies, filter, setFilter, toggleFilter, setToggleFilter} ) => {
-  function filterByRating(e){
-  
-  let rating = Number(e.target.value)
-  if (rating > 0){
-    setToggleFilter(true)
-  } else if (rating === 0){
-    setToggleFilter(false)
+
+const FilterDropdown = ({ userMovies, setFilter, toggleFilter, setToggleFilter }) => {
+  function filterByRating(e) {
+
+    let rating = Number(e.target.value)
+    if (rating > 0) {
+      setToggleFilter(true)
+    } else if (rating === 0) {
+      setToggleFilter(false)
+    }
+    let filtered = userMovies.filter((movie) => movie.rating === rating)
+    console.log(filtered)
+    console.log(toggleFilter)
+    return setFilter(filtered)
+
+
   }
-  let filtered = userMovies.filter( (movie) => movie.rating === rating)
-  console.log(filtered)
-  console.log(toggleFilter)
-  return setFilter(filtered)
-
- 
-}
-  return(
+  return (
     <div>
-      <select name="filter" id="filter"  onChange={ (e) => {filterByRating(e)}}>
+      <select name="filter" id="filter" onChange={(e) => { filterByRating(e) }}>
         <option value="0">Select a filter</option>
         <option value="1">1</option>
         <option value="2">2</option>
@@ -90,14 +89,38 @@ const FilterDropdown = ( {userMovies, filter, setFilter, toggleFilter, setToggle
   )
 }
 
+const SortDropdown = ({ toggleSort, setToggleSort, sort, setSort, setUserMovies, userMovies }) => {
 
-const Body_Right = ({ userMovies, deleteMovies, setCurrentId, setUserMovies, toggleFilter, setToggleFilter, filter, setFilter }) => (
+  function handleSort(e) {
+    let selected = e.target.value
+    if (selected === "alphabetical") {
+      setUserMovies(userMovies.toSorted((a, b) => a.title.localeCompare(b.title)))
+
+    } else if (selected === "rating") {
+      console.log("setting rating")
+      return setUserMovies(userMovies.sort((a, b) => b.rating - a.rating))
+    }
+  }
+
+  return (
+    <div>
+      <select name="sort" id="sort" onChange={(e) => { handleSort(e) }}>
+        <option value="">Sort</option>
+        <option value="alphabetical">Alphabetical</option>
+        <option value="rating">Rating</option>
+      </select>
+    </div>
+  )
+}
+
+
+const Body_Right = ({ userMovies, deleteMovies, setCurrentId, setUserMovies, toggleFilter, setToggleFilter, filter, setFilter, toggleSort, setToggleSort, sort, setSort }) => (
   <div id="body_right">
     <div id="films_header">My Films</div>
     <div id="films_UI">
       <button>Add Films</button>
-      <button>Sort By:</button>
-      <FilterDropdown userMovies={userMovies} setUserMovies={setUserMovies} toggleFilter={toggleFilter} setToggleFilter={setToggleFilter} filter={filter} setFilter={setFilter}/>
+      <SortDropdown userMovies={userMovies} setUserMovies={setUserMovies}toggleSort={toggleSort} setToggleSort={setToggleSort} sort={sort} setSort={setSort} />
+      <FilterDropdown userMovies={userMovies} setUserMovies={setUserMovies} toggleFilter={toggleFilter} setToggleFilter={setToggleFilter} filter={filter} setFilter={setFilter} />
     </div>
     <input type="search"></input>
     <MovieDisplay userMovies={userMovies} deleteMovies={deleteMovies} setCurrentId={setCurrentId} toggleFilter={toggleFilter} setToggleFilter={setToggleFilter} filter={filter} setFilter={setFilter} />
@@ -159,16 +182,19 @@ const Add_Films = ({ movies, showForm, setShowForm, onSubmit, newRating, setNewR
 function App() {
 
   const [movies, setMovies] = useState([]);
-  const [userMovies, setUserMovies] = useState([{ id: 1, title: "The Blue Gardenia", director: "Fritz Land", releaseDate: 1953, description: "Deeply distraught...", averageRating: 0, reviews: [], rating: 1 },
-  { id: 2, title: "Night and the City", director: "Jules Dassin", releaseDate: 1950, description: "Londoner Harry Fabian (Richard Widmark)...", averageRating: 0, reviews: [], rating: 2, review: "" },
-  { id: 3, title: "Niagara", director: "Henry Hathaway", releaseDate: 1953, description: "Rose Loomis (Marilyn Monroe) and her older...", averageRating: 0, reviews: [], rating: 3 }])
+  const [userMovies, setUserMovies] = useState([{ id: 1, title: "The Blue Gardenia", director: "Fritz Land", releaseDate: 1953, description: "Deeply distraught...", averageRating: 0, reviews: [], rating: 9 },
+  { id: 2, title: "Night and the City", director: "Jules Dassin", releaseDate: 1950, description: "Londoner Harry Fabian (Richard Widmark)...", averageRating: 0, reviews: [], rating: 4, review: "" },
+  { id: 3, title: "Niagara", director: "Henry Hathaway", releaseDate: 1953, description: "Rose Loomis (Marilyn Monroe) and her older...", averageRating: 0, reviews: [], rating: 3},
+ { id: 4, title: "Niagara", director: "Henry Hathaway", releaseDate: 1953, description: "Rose Loomis (Marilyn Monroe) and her older...", averageRating: 0, reviews: [], rating: 7}])
   const [showForm, setShowForm] = useState(false)
   const [newRating, setNewRating] = useState("")
   const [newReview, setNewReview] = useState("")
   const [currentId, setCurrentId] = useState("")
   const [toggleFilter, setToggleFilter] = useState(false)
   const [filter, setFilter] = useState('')
-  
+  const [toggleSort, setToggleSort] = useState(false)
+  const [sort, setSort] = useState('')
+
 
   useEffect(() => {
     axios.get('http://localhost:3001/api/movies')
@@ -222,7 +248,7 @@ function App() {
       <div id="body">
         <Profile_Header />
         <Add_Films movies={movies} setUserMovies={setUserMovies} userMovies={userMovies} showForm={showForm} setShowForm={setShowForm} newRating={newRating} setNewRating={setNewRating} newReview={newReview} setNewReview={setNewReview} onSubmit={addUserRatingAndReview} setCurrentId={setCurrentId} />
-        <Body_Right userMovies={userMovies} deleteMovies={deleteMovies} setCurrentId={setCurrentId} setUserMovies={setUserMovies} toggleFilter={toggleFilter} setToggleFilter={setToggleFilter} filter={filter} setFilter={setFilter}/>
+        <Body_Right userMovies={userMovies} deleteMovies={deleteMovies} setCurrentId={setCurrentId} setUserMovies={setUserMovies} toggleFilter={toggleFilter} setToggleFilter={setToggleFilter} filter={filter} setFilter={setFilter} toggleSort={toggleSort} setToggleSort={setToggleSort} sort={sort} setSort={setSort} />
       </div>
     </div>
   )
