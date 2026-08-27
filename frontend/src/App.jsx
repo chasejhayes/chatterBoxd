@@ -26,9 +26,19 @@ const Profile_Header = () => (
 
 
 
-const MovieDisplay = ({ userMovies, deleteMovies, toggleFilter, filter }) => {
+const MovieDisplay = ({ userMovies, deleteMovies, toggleFilter, filter, showForm, setShowForm, onSubmit, newRating, setNewRating, newReview, setNewReview, setCurrentId }) => {
 
   let displayType = userMovies
+
+  function handleShowForm(id){
+    setCurrentId(id)
+    return setShowForm(true)
+  }
+
+  function test(){
+    return console.log(123)
+  }
+
 
   if (toggleFilter === true) {
     displayType = filter
@@ -48,6 +58,8 @@ const MovieDisplay = ({ userMovies, deleteMovies, toggleFilter, filter }) => {
             <p>Average Rating: {item.averageRating}</p>
             <p>Reviews: {item.reviews}</p>
             <p>{item.review}{item.rating}</p>
+            <button onClick={() => {handleShowForm(item.id)}}>Edit</button>
+            <Form_Popup showForm={showForm} newRating={newRating} setNewRating={setNewRating} newReview={newReview} setNewReview={setNewReview} onSubmit={onSubmit} />
             <button onClick={() => { deleteMovies(item.id) }}>Delete</button>
           </li>
         )}
@@ -89,7 +101,7 @@ const FilterDropdown = ({ userMovies, setFilter, toggleFilter, setToggleFilter }
   )
 }
 
-const SortDropdown = ({ toggleSort, setToggleSort, sort, setSort, setUserMovies, userMovies }) => {
+const SortDropdown = ({ setUserMovies, userMovies }) => {
 
   function handleSort(e) {
     let selected = e.target.value
@@ -114,16 +126,16 @@ const SortDropdown = ({ toggleSort, setToggleSort, sort, setSort, setUserMovies,
 }
 
 
-const Body_Right = ({ userMovies, deleteMovies, setCurrentId, setUserMovies, toggleFilter, setToggleFilter, filter, setFilter, toggleSort, setToggleSort, sort, setSort }) => (
+const Body_Right = ({ userMovies, deleteMovies, setCurrentId, setUserMovies, toggleFilter, setToggleFilter, filter, setFilter, setShowForm, onSubmit, newRating, newReview, setNewRating, setNewReview }) => (
   <div id="body_right">
     <div id="films_header">My Films</div>
     <div id="films_UI">
       <button>Add Films</button>
-      <SortDropdown userMovies={userMovies} setUserMovies={setUserMovies}toggleSort={toggleSort} setToggleSort={setToggleSort} sort={sort} setSort={setSort} />
+      <SortDropdown userMovies={userMovies} setUserMovies={setUserMovies} />
       <FilterDropdown userMovies={userMovies} setUserMovies={setUserMovies} toggleFilter={toggleFilter} setToggleFilter={setToggleFilter} filter={filter} setFilter={setFilter} />
     </div>
     <input type="search"></input>
-    <MovieDisplay userMovies={userMovies} deleteMovies={deleteMovies} setCurrentId={setCurrentId} toggleFilter={toggleFilter} setToggleFilter={setToggleFilter} filter={filter} setFilter={setFilter} />
+    <MovieDisplay userMovies={userMovies} deleteMovies={deleteMovies} setCurrentId={setCurrentId} toggleFilter={toggleFilter} setToggleFilter={setToggleFilter} filter={filter} setFilter={setFilter} setShowForm={setShowForm} onSubmit={onSubmit} newRating={newRating} newReview={newReview} setNewRating={setNewRating} setNewReview={setNewReview} setCurrentId={setCurrentId}/>
   </div>
 )
 
@@ -146,6 +158,8 @@ const Form_Popup = ({ showForm, onSubmit, newRating, setNewRating, newReview, se
 
     )
 }
+
+
 
 
 const Add_Films = ({ movies, showForm, setShowForm, onSubmit, newRating, setNewRating, newReview, setNewReview, setCurrentId, userMovies }) => {
@@ -182,18 +196,14 @@ const Add_Films = ({ movies, showForm, setShowForm, onSubmit, newRating, setNewR
 function App() {
 
   const [movies, setMovies] = useState([]);
-  const [userMovies, setUserMovies] = useState([{ id: 1, title: "The Blue Gardenia", director: "Fritz Land", releaseDate: 1953, description: "Deeply distraught...", averageRating: 0, reviews: [], rating: 9 },
-  { id: 2, title: "Night and the City", director: "Jules Dassin", releaseDate: 1950, description: "Londoner Harry Fabian (Richard Widmark)...", averageRating: 0, reviews: [], rating: 4, review: "" },
-  { id: 3, title: "Niagara", director: "Henry Hathaway", releaseDate: 1953, description: "Rose Loomis (Marilyn Monroe) and her older...", averageRating: 0, reviews: [], rating: 3},
- { id: 4, title: "Niagara", director: "Henry Hathaway", releaseDate: 1953, description: "Rose Loomis (Marilyn Monroe) and her older...", averageRating: 0, reviews: [], rating: 7}])
+  const [userMovies, setUserMovies] = useState([{ id: 1, title: "The Blue Gardenia", director: "Fritz Land", releaseDate: 1953, description: "Deeply distraught...", averageRating: 0, reviews: [], rating: 9 }])
   const [showForm, setShowForm] = useState(false)
   const [newRating, setNewRating] = useState("")
   const [newReview, setNewReview] = useState("")
   const [currentId, setCurrentId] = useState("")
   const [toggleFilter, setToggleFilter] = useState(false)
   const [filter, setFilter] = useState('')
-  const [toggleSort, setToggleSort] = useState(false)
-  const [sort, setSort] = useState('')
+
 
 
   useEffect(() => {
@@ -231,12 +241,33 @@ function App() {
   }
 
   function deleteMovies(id) {
-
-
     axios.delete(`http://localhost:3001/api/movies/${id}`)
       .then(() => {
         setUserMovies(userMovies.filter(item => item.id !== id))
       })
+  }
+
+  function editReviewandRating(e){
+    e.preventDefault()
+    let id = currentId;
+
+    let patchRequest =
+    {
+      rating: newRating,
+      review: newReview,
+    }
+
+    axios.patch(
+      `http://localhost:3001/api/movies/${id}`, patchRequest
+    )
+      .then(res => {
+        setUserMovies([...userMovies, res.data])
+      })
+    setNewRating("")
+    setNewReview("")
+    setShowForm(false)
+    setCurrentId('')
+    
   }
 
 
@@ -248,7 +279,7 @@ function App() {
       <div id="body">
         <Profile_Header />
         <Add_Films movies={movies} setUserMovies={setUserMovies} userMovies={userMovies} showForm={showForm} setShowForm={setShowForm} newRating={newRating} setNewRating={setNewRating} newReview={newReview} setNewReview={setNewReview} onSubmit={addUserRatingAndReview} setCurrentId={setCurrentId} />
-        <Body_Right userMovies={userMovies} deleteMovies={deleteMovies} setCurrentId={setCurrentId} setUserMovies={setUserMovies} toggleFilter={toggleFilter} setToggleFilter={setToggleFilter} filter={filter} setFilter={setFilter} toggleSort={toggleSort} setToggleSort={setToggleSort} sort={sort} setSort={setSort} />
+        <Body_Right userMovies={userMovies} deleteMovies={deleteMovies} setCurrentId={setCurrentId} setUserMovies={setUserMovies} toggleFilter={toggleFilter} setToggleFilter={setToggleFilter} filter={filter} setFilter={setFilter} setShowForm={setShowForm} onSubmit={editReviewandRating} newRating={newRating} newReview={newReview} setNewRating={setNewRating} setNewReview={setNewReview} />
       </div>
     </div>
   )
@@ -256,3 +287,11 @@ function App() {
 }
 
 export default App
+
+
+
+
+// { id: 1, title: "The Blue Gardenia", director: "Fritz Land", releaseDate: 1953, description: "Deeply distraught...", averageRating: 0, reviews: [], rating: 9 },
+//   { id: 2, title: "Night and the City", director: "Jules Dassin", releaseDate: 1950, description: "Londoner Harry Fabian (Richard Widmark)...", averageRating: 0, reviews: [], rating: 4, review: "" },
+//   { id: 3, title: "Niagara", director: "Henry Hathaway", releaseDate: 1953, description: "Rose Loomis (Marilyn Monroe) and her older...", averageRating: 0, reviews: [], rating: 3},
+//  { id: 4, title: "Niagara", director: "Henry Hathaway", releaseDate: 1953, description: "Rose Loomis (Marilyn Monroe) and her older...", averageRating: 0, reviews: [], rating: 7}
