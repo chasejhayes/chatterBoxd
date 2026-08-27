@@ -30,12 +30,12 @@ const MovieDisplay = ({ userMovies, deleteMovies, toggleFilter, filter, showForm
 
   let displayType = userMovies
 
-  function handleShowForm(id){
+  function handleShowForm(id) {
     setCurrentId(id)
     return setShowForm(true)
   }
 
-  function test(){
+  function test() {
     return console.log(123)
   }
 
@@ -58,7 +58,7 @@ const MovieDisplay = ({ userMovies, deleteMovies, toggleFilter, filter, showForm
             <p>Average Rating: {item.averageRating}</p>
             <p>Reviews: {item.reviews}</p>
             <p>{item.review}{item.rating}</p>
-            <button onClick={() => {handleShowForm(item.id)}}>Edit</button>
+            <button onClick={() => { handleShowForm(item.id) }}>Edit</button>
             <Form_Popup showForm={showForm} newRating={newRating} setNewRating={setNewRating} newReview={newReview} setNewReview={setNewReview} onSubmit={onSubmit} />
             <button onClick={() => { deleteMovies(item.id) }}>Delete</button>
           </li>
@@ -135,7 +135,7 @@ const Body_Right = ({ userMovies, deleteMovies, setCurrentId, setUserMovies, tog
       <FilterDropdown userMovies={userMovies} setUserMovies={setUserMovies} toggleFilter={toggleFilter} setToggleFilter={setToggleFilter} filter={filter} setFilter={setFilter} />
     </div>
     <input type="search"></input>
-    <MovieDisplay userMovies={userMovies} deleteMovies={deleteMovies} setCurrentId={setCurrentId} toggleFilter={toggleFilter} setToggleFilter={setToggleFilter} filter={filter} setFilter={setFilter} setShowForm={setShowForm} onSubmit={onSubmit} newRating={newRating} newReview={newReview} setNewRating={setNewRating} setNewReview={setNewReview} setCurrentId={setCurrentId}/>
+    <MovieDisplay userMovies={userMovies} deleteMovies={deleteMovies} setCurrentId={setCurrentId} toggleFilter={toggleFilter} setToggleFilter={setToggleFilter} filter={filter} setFilter={setFilter} setShowForm={setShowForm} onSubmit={onSubmit} newRating={newRating} newReview={newReview} setNewRating={setNewRating} setNewReview={setNewReview} setCurrentId={setCurrentId} />
   </div>
 )
 
@@ -196,7 +196,7 @@ const Add_Films = ({ movies, showForm, setShowForm, onSubmit, newRating, setNewR
 function App() {
 
   const [movies, setMovies] = useState([]);
-  const [userMovies, setUserMovies] = useState([{ id: 1, title: "The Blue Gardenia", director: "Fritz Land", releaseDate: 1953, description: "Deeply distraught...", averageRating: 0, reviews: [], rating: 9 }])
+  const [userMovies, setUserMovies] = useState([{ id: 1, title: "The Blue Gardenia", director: "Fritz Land", releaseDate: 1953, description: "Deeply distraught...", averageRating: 0, reviews: [], rating: 9 },   { id: 2, title: "Night and the City", director: "Jules Dassin", releaseDate: 1950, description: "Londoner Harry Fabian (Richard Widmark)...", averageRating: 0, reviews: [], rating: 4, review: "" },])
   const [showForm, setShowForm] = useState(false)
   const [newRating, setNewRating] = useState("")
   const [newReview, setNewReview] = useState("")
@@ -231,8 +231,21 @@ function App() {
       `http://localhost:3001/api/movies/${id}`, patchRequest
     )
       .then(res => {
-        setUserMovies([...userMovies, res.data])
+        if (userMovies.some(movie => movie.id === res.data.id)) {
+         
+          let updated = userMovies.map((movie) => {
+            return movie.id == id
+              ? res.data
+              : movie
+          })
+          console.log(updated)
+          setUserMovies(updated)
+        } else {
+          setUserMovies([...userMovies, res.data])
+
+        }
       })
+    console.log(userMovies)
     setNewRating("")
     setNewReview("")
     setShowForm(false)
@@ -247,28 +260,40 @@ function App() {
       })
   }
 
-  function editReviewandRating(e){
-    e.preventDefault()
-    let id = currentId;
+  // function editReviewandRating(e) {
+  //   e.preventDefault()
+  //   let id = currentId;
 
-    let patchRequest =
-    {
-      rating: newRating,
-      review: newReview,
-    }
+  //   let patchRequest =
+  //   {
+  //     rating: newRating,
+  //     review: newReview,
+  //   }
 
-    axios.patch(
-      `http://localhost:3001/api/movies/${id}`, patchRequest
-    )
-      .then(res => {
-        setUserMovies([...userMovies, res.data])
-      })
-    setNewRating("")
-    setNewReview("")
-    setShowForm(false)
-    setCurrentId('')
-    
-  }
+  //   axios.patch(
+  //     `http://localhost:3001/api/movies/${id}`, patchRequest
+  //   )
+  //     .then(res => {
+  //       let new1 = userMovies.map(movie => {
+  //         movie.id == id
+  //           ? res.data
+  //           : movie
+  //       })
+  //       console.log(new1)
+
+  //       // setUserMovies([userMovies.map(movie => {
+  //       //   movie.id == id
+  //       //   ? res.data
+  //       //   : movie
+  //       // })])
+  //       // setUserMovies([...userMovies, res.data])
+  //     })
+  //   setNewRating("")
+  //   setNewReview("")
+  //   setShowForm(false)
+  //   setCurrentId('')
+
+  // }
 
 
 
@@ -279,7 +304,7 @@ function App() {
       <div id="body">
         <Profile_Header />
         <Add_Films movies={movies} setUserMovies={setUserMovies} userMovies={userMovies} showForm={showForm} setShowForm={setShowForm} newRating={newRating} setNewRating={setNewRating} newReview={newReview} setNewReview={setNewReview} onSubmit={addUserRatingAndReview} setCurrentId={setCurrentId} />
-        <Body_Right userMovies={userMovies} deleteMovies={deleteMovies} setCurrentId={setCurrentId} setUserMovies={setUserMovies} toggleFilter={toggleFilter} setToggleFilter={setToggleFilter} filter={filter} setFilter={setFilter} setShowForm={setShowForm} onSubmit={editReviewandRating} newRating={newRating} newReview={newReview} setNewRating={setNewRating} setNewReview={setNewReview} />
+        <Body_Right userMovies={userMovies} deleteMovies={deleteMovies} setCurrentId={setCurrentId} setUserMovies={setUserMovies} toggleFilter={toggleFilter} setToggleFilter={setToggleFilter} filter={filter} setFilter={setFilter} setShowForm={setShowForm} onSubmit={addUserRatingAndReview} newRating={newRating} newReview={newReview} setNewRating={setNewRating} setNewReview={setNewReview} />
       </div>
     </div>
   )
