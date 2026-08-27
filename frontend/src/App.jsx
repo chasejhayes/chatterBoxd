@@ -35,10 +35,7 @@ const MovieDisplay = ({ userMovies, deleteMovies, toggleFilter, filter, showForm
     return setShowForm(true)
   }
 
-  function test() {
-    return console.log(123)
-  }
-
+  
 
   if (toggleFilter === true) {
     displayType = filter
@@ -80,7 +77,8 @@ const FilterDropdown = ({ userMovies, setFilter, toggleFilter, setToggleFilter }
     } else if (rating === 0) {
       setToggleFilter(false)
     }
-    let filtered = userMovies.filter((movie) => movie.rating === rating)
+    console.log(userMovies)
+    let filtered = userMovies.filter((movie) => Number(movie.rating) === rating)
     console.log(filtered)
     console.log(toggleFilter)
     return setFilter(filtered)
@@ -196,7 +194,7 @@ const Add_Films = ({ movies, showForm, setShowForm, onSubmit, newRating, setNewR
 function App() {
 
   const [movies, setMovies] = useState([]);
-  const [userMovies, setUserMovies] = useState([{ id: 1, title: "The Blue Gardenia", director: "Fritz Land", releaseDate: 1953, description: "Deeply distraught...", averageRating: 0, reviews: [], rating: 9 },   { id: 2, title: "Night and the City", director: "Jules Dassin", releaseDate: 1950, description: "Londoner Harry Fabian (Richard Widmark)...", averageRating: 0, reviews: [], rating: 4, review: "" },])
+  const [userMovies, setUserMovies] = useState([])
   const [showForm, setShowForm] = useState(false)
   const [newRating, setNewRating] = useState("")
   const [newReview, setNewReview] = useState("")
@@ -238,14 +236,12 @@ function App() {
               ? res.data
               : movie
           })
-          console.log(updated)
           setUserMovies(updated)
         } else {
           setUserMovies([...userMovies, res.data])
 
         }
       })
-    console.log(userMovies)
     setNewRating("")
     setNewReview("")
     setShowForm(false)
@@ -259,43 +255,6 @@ function App() {
         setUserMovies(userMovies.filter(item => item.id !== id))
       })
   }
-
-  // function editReviewandRating(e) {
-  //   e.preventDefault()
-  //   let id = currentId;
-
-  //   let patchRequest =
-  //   {
-  //     rating: newRating,
-  //     review: newReview,
-  //   }
-
-  //   axios.patch(
-  //     `http://localhost:3001/api/movies/${id}`, patchRequest
-  //   )
-  //     .then(res => {
-  //       let new1 = userMovies.map(movie => {
-  //         movie.id == id
-  //           ? res.data
-  //           : movie
-  //       })
-  //       console.log(new1)
-
-  //       // setUserMovies([userMovies.map(movie => {
-  //       //   movie.id == id
-  //       //   ? res.data
-  //       //   : movie
-  //       // })])
-  //       // setUserMovies([...userMovies, res.data])
-  //     })
-  //   setNewRating("")
-  //   setNewReview("")
-  //   setShowForm(false)
-  //   setCurrentId('')
-
-  // }
-
-
 
 
   return (
