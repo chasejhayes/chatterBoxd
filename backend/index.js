@@ -18,6 +18,17 @@ app.get('/api/movies', (req, res) => {
     res.json(movieDB)
 })
 
+app.get('/api/movies/:id', (req, res) => {
+    const id = parseInt(req.params.id)
+
+    const movie = movieDB.find(movie => movie.id === id)
+    if (movie) {
+        res.json(movie)
+    } else {
+        res.status(404).end()
+    }
+})
+
 app.patch('/api/movies/:id', (req, res) => {
     const id = req.params.id
     movieDB = movieDB.map(item => 

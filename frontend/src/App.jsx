@@ -26,7 +26,7 @@ const Profile_Header = () => (
 
 
 
-const MovieDisplay = ({ userMovies, deleteMovies, toggleFilter, filter, showForm, setShowForm, onSubmit, newRating, setNewRating, newReview, setNewReview, setCurrentId }) => {
+const MovieDisplay = ({ userMovies, deleteMovies, toggleFilter, filter, showForm, setShowForm, onSubmit, newRating, setNewRating, newReview, setNewReview, setCurrentId, toggleSearch, searchArr}) => {
 
   let displayType = userMovies
 
@@ -35,11 +35,15 @@ const MovieDisplay = ({ userMovies, deleteMovies, toggleFilter, filter, showForm
     return setShowForm(true)
   }
 
-  
+
 
   if (toggleFilter === true) {
     displayType = filter
     console.log(filter)
+    console.log(displayType)
+  }
+  if(toggleSearch === true){
+    displayType = searchArr
     console.log(displayType)
   }
 
@@ -123,8 +127,31 @@ const SortDropdown = ({ setUserMovies, userMovies }) => {
   )
 }
 
+const SearchBar = ({ userMovies, searchArr, setSearchArr, searchValue, setSearchValue, setToggleSearch}) => {
 
-const Body_Right = ({ userMovies, deleteMovies, setCurrentId, setUserMovies, toggleFilter, setToggleFilter, filter, setFilter, setShowForm, onSubmit, newRating, newReview, setNewRating, setNewReview }) => (
+
+ function filterByName(e){
+  setToggleSearch(true)
+  setSearchValue(e.target.value)
+  let filtered = userMovies.filter(movie => movie.title.startsWith(e.target.value))
+  setSearchArr(filtered)
+  console.log(searchArr)
+
+  if(e.target.value === ""){
+    setToggleSearch(false)
+  }
+
+ }
+
+  return (
+    <input 
+    value={searchValue}
+    onChange={(e) => filterByName(e)}/>
+  )
+}
+
+
+const Body_Right = ({ userMovies, deleteMovies, setCurrentId, setUserMovies, toggleFilter, setToggleFilter, filter, setFilter, setShowForm, onSubmit, newRating, newReview, setNewRating, setNewReview, searchArr, setSearchArr, searchValue, setSearchValue, toggleSearch, setToggleSearch}) => (
   <div id="body_right">
     <div id="films_header">My Films</div>
     <div id="films_UI">
@@ -132,8 +159,8 @@ const Body_Right = ({ userMovies, deleteMovies, setCurrentId, setUserMovies, tog
       <SortDropdown userMovies={userMovies} setUserMovies={setUserMovies} />
       <FilterDropdown userMovies={userMovies} setUserMovies={setUserMovies} toggleFilter={toggleFilter} setToggleFilter={setToggleFilter} filter={filter} setFilter={setFilter} />
     </div>
-    <input type="search"></input>
-    <MovieDisplay userMovies={userMovies} deleteMovies={deleteMovies} setCurrentId={setCurrentId} toggleFilter={toggleFilter} setToggleFilter={setToggleFilter} filter={filter} setFilter={setFilter} setShowForm={setShowForm} onSubmit={onSubmit} newRating={newRating} newReview={newReview} setNewRating={setNewRating} setNewReview={setNewReview} setCurrentId={setCurrentId} />
+    <SearchBar userMovies={userMovies} searchArr={searchArr} setSearchArr={setSearchArr} searchValue={searchValue} setSearchValue={setSearchValue} toggleSearch={toggleSearch} setToggleSearch={setToggleSearch} />
+    <MovieDisplay userMovies={userMovies} deleteMovies={deleteMovies} setCurrentId={setCurrentId} toggleFilter={toggleFilter} setToggleFilter={setToggleFilter} filter={filter} setFilter={setFilter} setShowForm={setShowForm} onSubmit={onSubmit} newRating={newRating} newReview={newReview} setNewRating={setNewRating} setNewReview={setNewReview} setCurrentId={setCurrentId} toggleSearch={toggleSearch} searchArr={searchArr}/>
   </div>
 )
 
@@ -194,13 +221,18 @@ const Add_Films = ({ movies, showForm, setShowForm, onSubmit, newRating, setNewR
 function App() {
 
   const [movies, setMovies] = useState([]);
-  const [userMovies, setUserMovies] = useState([])
+  const [userMovies, setUserMovies] = useState([{ id: 1, title: "The Blue Gardenia", director: "Fritz Land", releaseDate: 1953, description: "Deeply distraught...", averageRating: 0, reviews: [], rating: 9 },
+  { id: 2, title: "Night and the City", director: "Jules Dassin", releaseDate: 1950, description: "Londoner Harry Fabian (Richard Widmark)...", averageRating: 0, reviews: [], rating: 4, review: "" },
+  { id: 3, title: "Niagara", director: "Henry Hathaway", releaseDate: 1953, description: "Rose Loomis (Marilyn Monroe) and her older...", averageRating: 0, reviews: [], rating: 3 }])
   const [showForm, setShowForm] = useState(false)
   const [newRating, setNewRating] = useState("")
   const [newReview, setNewReview] = useState("")
   const [currentId, setCurrentId] = useState("")
   const [toggleFilter, setToggleFilter] = useState(false)
   const [filter, setFilter] = useState('')
+  const [searchValue, setSearchValue] = useState('')
+  const [searchArr, setSearchArr] = useState([])
+  const [toggleSearch, setToggleSearch] = useState(false)
 
 
 
@@ -214,6 +246,8 @@ function App() {
       })
 
   }, [])
+
+
 
   function addUserRatingAndReview(e) {
     e.preventDefault()
@@ -230,7 +264,7 @@ function App() {
     )
       .then(res => {
         if (userMovies.some(movie => movie.id === res.data.id)) {
-         
+
           let updated = userMovies.map((movie) => {
             return movie.id == id
               ? res.data
@@ -263,7 +297,7 @@ function App() {
       <div id="body">
         <Profile_Header />
         <Add_Films movies={movies} setUserMovies={setUserMovies} userMovies={userMovies} showForm={showForm} setShowForm={setShowForm} newRating={newRating} setNewRating={setNewRating} newReview={newReview} setNewReview={setNewReview} onSubmit={addUserRatingAndReview} setCurrentId={setCurrentId} />
-        <Body_Right userMovies={userMovies} deleteMovies={deleteMovies} setCurrentId={setCurrentId} setUserMovies={setUserMovies} toggleFilter={toggleFilter} setToggleFilter={setToggleFilter} filter={filter} setFilter={setFilter} setShowForm={setShowForm} onSubmit={addUserRatingAndReview} newRating={newRating} newReview={newReview} setNewRating={setNewRating} setNewReview={setNewReview} />
+        <Body_Right userMovies={userMovies} deleteMovies={deleteMovies} setCurrentId={setCurrentId} setUserMovies={setUserMovies} toggleFilter={toggleFilter} setToggleFilter={setToggleFilter} filter={filter} setFilter={setFilter} setShowForm={setShowForm} onSubmit={addUserRatingAndReview} newRating={newRating} newReview={newReview} setNewRating={setNewRating} setNewReview={setNewReview} searchArr={searchArr} setSearchArr={setSearchArr} searchValue={searchValue} setSearchValue={setSearchValue} toggleSearch={toggleSearch} setToggleSearch={setToggleSearch} />
       </div>
     </div>
   )
