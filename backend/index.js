@@ -15,7 +15,7 @@ let movieDB = [
 
 ]
 
-app.get('/', (req, res) => {
+app.get('/api/movies', (req, res) => {
     res.json(movieDB)
 })
 
@@ -59,7 +59,7 @@ app.delete('/api/movies/:id', (req, res) => {
 
 const PORT = process.env.PORT || 3001
 
-app.listen((PORT), () => {
+app.listen((PORT, '0.0.0.0'), () => {
     console.log("Listening on 3001")
 })
 
