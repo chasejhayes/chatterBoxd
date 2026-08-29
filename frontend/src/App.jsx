@@ -237,7 +237,7 @@ function App() {
 
 
   useEffect(() => {
-    axios.get('http://localhost:3001/api/movies')
+    axios.get('/api/movies')
       .then((response) => {
         setMovies(response.data)
       })
@@ -260,7 +260,7 @@ function App() {
     }
 
     axios.patch(
-      `http://localhost:3001/api/movies/${id}`, patchRequest
+      `/api/movies/${id}`, patchRequest
     )
       .then(res => {
         if (userMovies.some(movie => movie.id === res.data.id)) {
@@ -284,7 +284,7 @@ function App() {
   }
 
   function deleteMovies(id) {
-    axios.delete(`http://localhost:3001/api/movies/${id}`)
+    axios.delete(`/api/movies/${id}`)
       .then(() => {
         setUserMovies(userMovies.filter(item => item.id !== id))
       })
