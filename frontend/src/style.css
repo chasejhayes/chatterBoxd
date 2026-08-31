@@ -7,8 +7,8 @@
 }
 
 #body {
-    /* background-color: mintcream; */
-    background-color: aqua;
+    background-color: mintcream;
+    /* background-color: aqua; */
     width: 100vw;
     min-height: 100svh;
     box-sizing: border-box;
