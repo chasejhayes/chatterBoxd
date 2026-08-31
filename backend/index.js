@@ -57,7 +57,7 @@ app.delete('/api/movies/:id', (req, res) => {
     res.json(deletedMovie)
 })
 
-const PORT = process.env.PORT
+const PORT = process.env.PORT || 3001
 
 app.listen((PORT), () => {
     console.log(`Listening on ${PORT}`)
