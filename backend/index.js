@@ -1,6 +1,8 @@
 const express = require('express')
 const cors = require('cors')
 const app = express()
+const mongoose = require('mongoose')
+require('dotenv').config()
 
 app.use(express.json())
 app.use(express.static('dist'))
@@ -15,8 +17,44 @@ let movieDB = [
 
 ]
 
+const password = process.argv[2]
+const url = `mongodb+srv://chasejhayes1_db_user:${password}@cluster0.mp5vnji.mongodb.net/?appName=Cluster0`
+
+mongoose.set('strictQuery', false)
+mongoose.connect(url, { family: 4 })
+
+const movieSchema = new mongoose.Schema({
+    title: String,
+    director: String,
+    releaseDate: String,
+    description: String,
+    averageRating: Number,
+    reviews: Array,
+    review: String,
+    rating: Number
+})
+
+// {
+//     "title": "The Big Sleep",
+//     "director": "Fritz Lang",
+//     "relaseDate": 1952,
+//     "description": "A Description",
+//     "averageRating": 0,
+//     "reviews": [],
+//     "review": "",
+//     "rating": 0
+// }
+
+const Movie = mongoose.model('Movie', movieSchema)
+
+// app.get('/api/movies', (req, res) => {
+//     res.json(movieDB)
+// })
+
 app.get('/api/movies', (req, res) => {
-    res.json(movieDB)
+    Movie.find({}).then(movies => {
+        res.json(movies)
+    })
 })
 
 app.get('/api/movies/:id', (req, res) => {
@@ -28,6 +66,42 @@ app.get('/api/movies/:id', (req, res) => {
     } else {
         res.status(404).end()
     }
+})
+
+// {
+//     "title": "The Big Sleep",
+//     "director": "Fritz Lang",
+//     "relaseDate": 1952,
+//     "description": "A Description",
+//     "averageRating": 0,
+//     "reviews": [],
+//     "review": "",
+//     "rating": 0
+// }
+
+app.post('/api/movies', (req, res) => {
+    const body = req.body
+
+    console.log(req.body)
+
+    // if(!body.content){
+    //     return res.status(400).json({error: 'content missing'})
+    // }
+
+    const movie = new Movie({
+        title: body.title,
+        director: body.director,
+        releaseDate: body.releaseDate,
+        description: body.description,
+        averageRating: body.averageRating,
+        reviews: body.reviews,
+        review: body.review,
+        rating: body.rating
+    })
+
+    movie.save().then(savedMovie => {
+        res.json(savedMovie)
+    })
 })
 
 app.patch('/api/movies/:id', (req, res) => {
