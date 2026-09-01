@@ -246,6 +246,21 @@ function App() {
 
   }, [])
 
+  useEffect(() => {
+    axios.get('/api/movies')
+    .then((res) => {
+      let userMov = []
+      for(res of res.data){
+        if(res.rating && res.review){
+          userMov.push(res)
+        }
+      }
+      setUserMovies(userMov)
+
+    })
+  }, [])
+
+  // 
 
 
   function addUserRatingAndReview(e) {
@@ -279,6 +294,7 @@ function App() {
     setNewReview("")
     setShowForm(false)
     setCurrentId('')
+    console.log(userMovies)
 
   }
 
