@@ -198,7 +198,8 @@ const Add_Films = ({ movies, showForm, setShowForm, onSubmit, newRating, setNewR
     }
   }
   const handleSetId = (e) => {
-    let id = Number(e.target.value)
+    // let id = Number(e.target.value)
+    let id = e.target.value
     setCurrentId(id)
     handleShowForm(id)
   }

@@ -34,6 +34,14 @@ const movieSchema = new mongoose.Schema({
     rating: Number
 })
 
+movieSchema.set('toJSON', {
+  transform: (document, returnedObject) => {
+    returnedObject.id = returnedObject._id.toString()
+    delete returnedObject._id
+    delete returnedObject.__v
+  }
+})
+
 
 const Movie = mongoose.model('Movie', movieSchema)
 
@@ -77,8 +85,10 @@ app.post('/api/movies', (req, res) => {
     })
 })
 
-app.patch('/api/movies/:id', (req, res) => {
-    const { rating, review } = request.body
+app.patch('/api/movies/:id', (req, res, next) => {
+    const { rating, review } = req.body
+
+    console.log(`Id is: ${req.params.id}`)
 
     Movie.findById(req.params.id)
     .then(movie => {
