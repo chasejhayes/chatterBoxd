@@ -9,7 +9,7 @@ app.use(express.static('dist'))
 app.use(cors())
 
 let movieDB = [
-    {id:1, title: "The Blue Gardenia", director: "Fritz Land", releaseDate: 1953, description:"Deeply distraught that her GI ex-boyfriend plans to marry another woman, Norah Larkin (Anne Baxter) agrees to go out on a date with lothario Harry Prebble (Raymond Burr). Norah's drunken night out with Prebble ends in a hazily remembered confrontation and the next day a startling discovery: Harry has been murdered, and the police have found Norah's personal effects at the scene. Tipped off to the breaking news, reporter Casey Mayo (Richard Conte) invites Norah to tell her side of the story.", averageRating: 0, reviews: []},
+    {id:1, "title": "The Blue Gardenia", "director": "Fritz Land", "releaseDate": 1953, "description":"Deeply distraught that her GI ex-boyfriend plans to marry another woman, Norah Larkin (Anne Baxter) agrees to go out on a date with lothario Harry Prebble (Raymond Burr). Norah's drunken night out with Prebble ends in a hazily remembered confrontation and the next day a startling discovery: Harry has been murdered, and the police have found Norah's personal effects at the scene. Tipped off to the breaking news, reporter Casey Mayo (Richard Conte) invites Norah to tell her side of the story.", "averageRating": 0, "reviews": []},
     {id:2, title: "Night and the City", director: "Jules Dassin", releaseDate: 1950, description: "Londoner Harry Fabian (Richard Widmark) is a second-rate con man looking for an angle. After years of putting up with Harry's schemes, his girlfriend, Mary (Gene Tierney), becomes fed up when he taps her for yet another loan. His latest ploy, promoting an aging Greek wrestler, goes awry when the wrestler dies and everyone points the finger at Harry. Hiding out in a riverfront barge, Harry sees his grand ambitions spiral into a nightmare of fear and desperation as the underworld closes in.", averageRating: 0, reviews: [], rating: "", review: ""},
     {id:3, title: "Niagara", director: "Henry Hathaway", releaseDate: 1953, description: "Rose Loomis (Marilyn Monroe) and her older, gloomier husband, George (Joseph Cotten), are vacationing at a cabin in Niagara Falls, N.Y. The couple befriend Polly (Jean Peters) and Ray Cutler (Casey Adams), who are honeymooning in the area. Polly begins to suspect that something is amiss between Rose and George, and her suspicions grow when she sees Rose in the arms of another man. While Ray initially thinks Polly is overreacting, things between George and Rose soon take a shockingly dark turn.", averageRating: 0, reviews: []},
     {id:4, title: "Leave Her to Heaven", director: "John M. Stahl", releaseDate: 1945, description: "While on a train, writer Richard Harland (Cornel Wilde) strikes up a relationship with the gorgeous Ellen Berent (Gene Tierney). Ellen quickly becomes obsessed with Richard and abandons her fiancé, Russell Quinton (Vincent Price), to be with him. The couple rushes into marriage, with both of them caught up in romance and Richard intrigued by Ellen's intensity. Only after settling into marriage, however, does Richard realize that she is psychotically jealous and highly unstable.", averageRating: 0, reviews: []},
@@ -34,22 +34,9 @@ const movieSchema = new mongoose.Schema({
     rating: Number
 })
 
-// {
-//     "title": "The Big Sleep",
-//     "director": "Fritz Lang",
-//     "relaseDate": 1952,
-//     "description": "A Description",
-//     "averageRating": 0,
-//     "reviews": [],
-//     "review": "",
-//     "rating": 0
-// }
 
 const Movie = mongoose.model('Movie', movieSchema)
 
-// app.get('/api/movies', (req, res) => {
-//     res.json(movieDB)
-// })
 
 app.get('/api/movies', (req, res) => {
     Movie.find({}).then(movies => {
@@ -58,35 +45,21 @@ app.get('/api/movies', (req, res) => {
 })
 
 app.get('/api/movies/:id', (req, res) => {
-    const id = parseInt(req.params.id)
 
-    const movie = movieDB.find(movie => movie.id === id)
-    if (movie) {
+    Movie.findById(req.params.id)
+    .then(movie => {
         res.json(movie)
-    } else {
-        res.status(404).end()
-    }
+    })
 })
 
-// {
-//     "title": "The Big Sleep",
-//     "director": "Fritz Lang",
-//     "relaseDate": 1952,
-//     "description": "A Description",
-//     "averageRating": 0,
-//     "reviews": [],
-//     "review": "",
-//     "rating": 0
-// }
+
 
 app.post('/api/movies', (req, res) => {
     const body = req.body
 
-    console.log(req.body)
-
-    // if(!body.content){
-    //     return res.status(400).json({error: 'content missing'})
-    // }
+    if(!body.title){
+        return res.status(400).json({error: 'content missing'})
+    }
 
     const movie = new Movie({
         title: body.title,
@@ -105,30 +78,57 @@ app.post('/api/movies', (req, res) => {
 })
 
 app.patch('/api/movies/:id', (req, res) => {
-    const id = req.params.id
-    movieDB = movieDB.map(item => 
-        item.id == id
-        ? {...item, ...req.body}
-        : item
-    )
-    let updatedMovies = movieDB.find(item =>
-        item.id == id
-    )
-    res.json(updatedMovies)
+    const { rating, review } = request.body
+
+    Movie.findById(req.params.id)
+    .then(movie => {
+        if(!movie){
+            return res.status(404).end()
+        }
+
+        movie.rating = rating
+        movie.review = review
+
+        return movie.save().then((updatedMovie) => {
+            res.json(updatedMovie)
+        })
+    })
+    .catch(error => next(error))
+    // const id = req.params.id
+    // movieDB = movieDB.map(item => 
+    //     item.id == id
+    //     ? {...item, ...req.body}
+    //     : item
+    // )
+    // let updatedMovies = movieDB.find(item =>
+    //     item.id == id
+    // )
+    // res.json(updatedMovies)
  
 })
 
-app.delete('/api/movies/:id', (req, res) => {
-    const id = req.params.id
-    movieDB = movieDB.map(item => 
-        item.id == id
-        ? {...item, review: '', rating: ''}
-        : item
-    )
-    let deletedMovie = movieDB.find(item =>
-        item.id == id
-    )
-    res.json(deletedMovie)
+app.delete('/api/movies/:id', (req, res, next) => {
+    Movie.findById(req.params.id)
+    .then(movie => {
+        movie.review = ""
+        movie.rating = ""
+
+        return movie.save().then((updatedMovie) => {
+            res.json(updatedMovie)
+        })
+        
+    })
+    .catch(error => next(error))
+    // const id = req.params.id
+    // movieDB = movieDB.map(item => 
+    //     item.id == id
+    //     ? {...item, review: '', rating: ''}
+    //     : item
+    // )
+    // let deletedMovie = movieDB.find(item =>
+    //     item.id == id
+    // )
+    // res.json(deletedMovie)
 })
 
 const PORT = process.env.PORT || 3001
