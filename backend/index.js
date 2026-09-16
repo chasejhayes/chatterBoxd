@@ -17,11 +17,11 @@ let movieDB = [
 
 ]
 
-const password = process.argv[2]
-const url = `mongodb+srv://chasejhayes1_db_user:${password}@cluster0.mp5vnji.mongodb.net/?appName=Cluster0`
+// const password = process.argv[2]
+// const url = `mongodb+srv://chasejhayes1_db_user:${password}@cluster0.mp5vnji.mongodb.net/?appName=Cluster0`
 
 mongoose.set('strictQuery', false)
-mongoose.connect(url, { family: 4 })
+mongoose.connect(process.env.MONGODB_URI, { family: 4 })
 
 const movieSchema = new mongoose.Schema({
     title: String,
@@ -104,17 +104,6 @@ app.patch('/api/movies/:id', (req, res, next) => {
         })
     })
     .catch(error => next(error))
-    // const id = req.params.id
-    // movieDB = movieDB.map(item => 
-    //     item.id == id
-    //     ? {...item, ...req.body}
-    //     : item
-    // )
-    // let updatedMovies = movieDB.find(item =>
-    //     item.id == id
-    // )
-    // res.json(updatedMovies)
- 
 })
 
 app.delete('/api/movies/:id', (req, res, next) => {
@@ -129,16 +118,6 @@ app.delete('/api/movies/:id', (req, res, next) => {
         
     })
     .catch(error => next(error))
-    // const id = req.params.id
-    // movieDB = movieDB.map(item => 
-    //     item.id == id
-    //     ? {...item, review: '', rating: ''}
-    //     : item
-    // )
-    // let deletedMovie = movieDB.find(item =>
-    //     item.id == id
-    // )
-    // res.json(deletedMovie)
 })
 
 const PORT = process.env.PORT || 3001
