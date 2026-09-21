@@ -1,6 +1,123 @@
 import axios from "axios"
+import {
+  BrowserRouter as Router,
+  Routes, Route, Link
+} from 'react-router-dom'
 import { useEffect, useState } from "react"
 import './style.css'
+
+
+const Home = () => {
+  return (
+    <div>
+      Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea praesentium quo autem! Saepe qui enim nesciunt quia suscipit. Dolorem minima cumque quasi explicabo consequatur ab possimus, perferendis dolore doloribus consectetur.
+    </div>
+  )
+}
+
+const UserProfile = () => {
+
+  const [movies, setMovies] = useState([]);
+  const [userMovies, setUserMovies] = useState([])
+  const [showForm, setShowForm] = useState(false)
+  const [newRating, setNewRating] = useState("")
+  const [newReview, setNewReview] = useState("")
+  const [currentId, setCurrentId] = useState("")
+  const [toggleFilter, setToggleFilter] = useState(false)
+  const [filter, setFilter] = useState('')
+  const [searchValue, setSearchValue] = useState('')
+  const [searchArr, setSearchArr] = useState([])
+  const [toggleSearch, setToggleSearch] = useState(false)
+  
+
+
+
+  useEffect(() => {
+    axios.get('/api/movies')
+      .then((response) => {
+        setMovies(response.data)
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+
+  }, [])
+
+  useEffect(() => {
+    axios.get('/api/movies')
+    .then((res) => {
+      let userMov = []
+      for(res of res.data){
+        if(res.rating && res.review){
+          userMov.push(res)
+        }
+      }
+      setUserMovies(userMov)
+
+    })
+  }, [])
+
+  // 
+
+
+  function addUserRatingAndReview(e) {
+    e.preventDefault()
+    let id = currentId;
+
+    let patchRequest =
+    {
+      rating: newRating,
+      review: newReview,
+    }
+
+    axios.patch(
+      `/api/movies/${id}`, patchRequest
+    )
+      .then(res => {
+        if (userMovies.some(movie => movie.id === res.data.id)) {
+
+          let updated = userMovies.map((movie) => {
+            return movie.id == id
+              ? res.data
+              : movie
+          })
+          setUserMovies(updated)
+        } else {
+          setUserMovies([...userMovies, res.data])
+
+        }
+      })
+    setNewRating("")
+    setNewReview("")
+    setShowForm(false)
+    setCurrentId('')
+    console.log(userMovies)
+
+  }
+
+  function deleteMovies(id) {
+    axios.delete(`/api/movies/${id}`)
+      .then(() => {
+        setUserMovies(userMovies.filter(item => item.id !== id))
+      })
+  }
+
+
+  return (
+    <div>
+      <Header />
+      <div id="body">
+        <Profile_Header />
+        <Add_Films movies={movies} setUserMovies={setUserMovies} userMovies={userMovies} showForm={showForm} setShowForm={setShowForm} newRating={newRating} setNewRating={setNewRating} newReview={newReview} setNewReview={setNewReview} onSubmit={addUserRatingAndReview} setCurrentId={setCurrentId} />
+        <Body_Right userMovies={userMovies} deleteMovies={deleteMovies} setCurrentId={setCurrentId} setUserMovies={setUserMovies} toggleFilter={toggleFilter} setToggleFilter={setToggleFilter} filter={filter} setFilter={setFilter} setShowForm={setShowForm} onSubmit={addUserRatingAndReview} newRating={newRating} newReview={newReview} setNewRating={setNewRating} setNewReview={setNewReview} searchArr={searchArr} setSearchArr={setSearchArr} searchValue={searchValue} setSearchValue={setSearchValue} toggleSearch={toggleSearch} setToggleSearch={setToggleSearch} />
+      </div>
+    </div>
+  )
+
+}
+
+
+
 
 const Header = () => (
   <div id="header">
@@ -219,104 +336,27 @@ const Add_Films = ({ movies, showForm, setShowForm, onSubmit, newRating, setNewR
 
 
 
+
+
 function App() {
 
-  const [movies, setMovies] = useState([]);
-  const [userMovies, setUserMovies] = useState([])
-  const [showForm, setShowForm] = useState(false)
-  const [newRating, setNewRating] = useState("")
-  const [newReview, setNewReview] = useState("")
-  const [currentId, setCurrentId] = useState("")
-  const [toggleFilter, setToggleFilter] = useState(false)
-  const [filter, setFilter] = useState('')
-  const [searchValue, setSearchValue] = useState('')
-  const [searchArr, setSearchArr] = useState([])
-  const [toggleSearch, setToggleSearch] = useState(false)
 
-
-
-  useEffect(() => {
-    axios.get('/api/movies')
-      .then((response) => {
-        setMovies(response.data)
-      })
-      .catch((error) => {
-        console.log(error)
-      })
-
-  }, [])
-
-  useEffect(() => {
-    axios.get('/api/movies')
-    .then((res) => {
-      let userMov = []
-      for(res of res.data){
-        if(res.rating && res.review){
-          userMov.push(res)
-        }
-      }
-      setUserMovies(userMov)
-
-    })
-  }, [])
-
-  // 
-
-
-  function addUserRatingAndReview(e) {
-    e.preventDefault()
-    let id = currentId;
-
-    let patchRequest =
-    {
-      rating: newRating,
-      review: newReview,
-    }
-
-    axios.patch(
-      `/api/movies/${id}`, patchRequest
-    )
-      .then(res => {
-        if (userMovies.some(movie => movie.id === res.data.id)) {
-
-          let updated = userMovies.map((movie) => {
-            return movie.id == id
-              ? res.data
-              : movie
-          })
-          setUserMovies(updated)
-        } else {
-          setUserMovies([...userMovies, res.data])
-
-        }
-      })
-    setNewRating("")
-    setNewReview("")
-    setShowForm(false)
-    setCurrentId('')
-    console.log(userMovies)
-
+  const padding = {
+    padding: 5
   }
-
-  function deleteMovies(id) {
-    axios.delete(`/api/movies/${id}`)
-      .then(() => {
-        setUserMovies(userMovies.filter(item => item.id !== id))
-      })
-  }
-
-
   return (
+  <Router>
     <div>
-      <Header />
-      <div id="body">
-        <Profile_Header />
-        <Add_Films movies={movies} setUserMovies={setUserMovies} userMovies={userMovies} showForm={showForm} setShowForm={setShowForm} newRating={newRating} setNewRating={setNewRating} newReview={newReview} setNewReview={setNewReview} onSubmit={addUserRatingAndReview} setCurrentId={setCurrentId} />
-        <Body_Right userMovies={userMovies} deleteMovies={deleteMovies} setCurrentId={setCurrentId} setUserMovies={setUserMovies} toggleFilter={toggleFilter} setToggleFilter={setToggleFilter} filter={filter} setFilter={setFilter} setShowForm={setShowForm} onSubmit={addUserRatingAndReview} newRating={newRating} newReview={newReview} setNewRating={setNewRating} setNewReview={setNewReview} searchArr={searchArr} setSearchArr={setSearchArr} searchValue={searchValue} setSearchValue={setSearchValue} toggleSearch={toggleSearch} setToggleSearch={setToggleSearch} />
-      </div>
+      <Link style={padding} to="/">home</Link>
+      <Link style={padding} to="/profile">profile</Link>
     </div>
-  )
 
+    <Routes>
+      <Route path="/" element={<Home />}/>
+      <Route path="/profile" element={<UserProfile />}/>
+    </Routes>
+  </Router>
+  )
 }
 
 export default App
