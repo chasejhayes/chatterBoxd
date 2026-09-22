@@ -3,6 +3,7 @@ import {
   BrowserRouter as Router,
   Routes, Route, Link
 } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { useEffect, useState } from "react"
 import './style.css'
 
@@ -19,7 +20,7 @@ const NotFound =() => (
   <div>404</div>
 )
 
-const FilmsPage = ({movies, setMovies})=> {
+const MoviesPage = ({movies, setMovies})=> {
 
 
   useEffect(() => {
@@ -38,16 +39,37 @@ const FilmsPage = ({movies, setMovies})=> {
       <ul>
         {movies.map((item) =>
         <li key={item.id}>
-          <h2>{item.title} {item.rating}</h2>
+          <Link to={`/movies/${item.id}`}>{item.title}</Link>
+          {/* <h2>{item.title} {item.rating}</h2>
             <p>Directed By: {item.director}</p>
             <h3>Description</h3>
             <p>{item.description}</p>
             <p>Average Rating: {item.averageRating}</p>
             <p>Reviews: {item.reviews}</p>
-            <p>{item.review}{item.rating}</p>
+            <p>{item.review}{item.rating}</p> */}
         </li>
         )}
       </ul>
+    </div>
+  )
+}
+
+const Movies = ({movies}) => {
+
+  const id = useParams().id
+  const item = movies.find(n => n.id === id)
+
+  return(
+        <div id="body">
+          <ul>
+            <h2>{item.title} {item.rating}</h2>
+              <p>Directed By: {item.director}</p>
+              <h3>Description</h3>
+              <p>{item.description}</p>
+              <p>Average Rating: {item.averageRating}</p>
+              <p>Reviews: {item.reviews}</p>
+              <p>{item.review}{item.rating}</p>
+          </ul>
     </div>
   )
 }
@@ -385,13 +407,16 @@ function App() {
       <Link to="/">home</Link>
       <Link to="/profile">profile</Link>
       <Link to="/users">users</Link>
-      <Link to="/films">films</Link>
+      <Link to="/movies">movies</Link>
     </div>
 
     <Routes>
+      <Route path="/movies/:id" element={
+        <Movies movies={movies}/>
+      }/> 
       <Route path="/" element={<Home />}/>
       <Route path="/profile" element={<UserProfile movies={movies} setMovies={setMovies} />}/>
-      <Route path="/films" element={<FilmsPage movies={movies} setMovies={setMovies}/>}/>
+      <Route path="/movies" element={<MoviesPage movies={movies} setMovies={setMovies}/>}/>
       <Route path="/users" element={<UsersPage/>}/>
       <Route path="*" element={<NotFound />}/>
 
