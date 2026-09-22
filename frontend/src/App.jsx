@@ -105,7 +105,7 @@ const UserProfile = () => {
 
   return (
     <div>
-      <Header />
+      {/* <Header /> */}
       <div id="body">
         <Profile_Header />
         <Add_Films movies={movies} setUserMovies={setUserMovies} userMovies={userMovies} showForm={showForm} setShowForm={setShowForm} newRating={newRating} setNewRating={setNewRating} newReview={newReview} setNewReview={setNewReview} onSubmit={addUserRatingAndReview} setCurrentId={setCurrentId} />
@@ -119,17 +119,17 @@ const UserProfile = () => {
 
 
 
-const Header = () => (
-  <div id="header">
-    <div>ChatterBOXD</div>
-    <div>My Profile</div>
-    <div>All Films</div>
-    <div>All Users</div>
-    <div>
-      <input type="search"></input>
-    </div>
-  </div>
-)
+// const Header = () => (
+//   <div id="header">
+//     <div>ChatterBOXD</div>
+//     <div>My Profile</div>
+//     <div>All Films</div>
+//     <div>All Users</div>
+//     <div>
+//       <input type="search"></input>
+//     </div>
+//   </div>
+// )
 
 const Profile_Header = () => (
   <div id="profile_header">
@@ -341,19 +341,21 @@ const Add_Films = ({ movies, showForm, setShowForm, onSubmit, newRating, setNewR
 function App() {
 
 
-  const padding = {
-    padding: 5
-  }
+
   return (
   <Router>
-    <div>
-      <Link style={padding} to="/">home</Link>
-      <Link style={padding} to="/profile">profile</Link>
+    <div id="header">
+      <div>chatterBOXD</div>
+      <Link to="/">home</Link>
+      <Link to="/profile">profile</Link>
+      <Link to="/users">users</Link>
+      <Link to="/films">films</Link>
     </div>
 
     <Routes>
       <Route path="/" element={<Home />}/>
       <Route path="/profile" element={<UserProfile />}/>
+
     </Routes>
   </Router>
   )
