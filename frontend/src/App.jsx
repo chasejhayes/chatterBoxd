@@ -15,6 +15,10 @@ const Home = () => {
   )
 }
 
+const NotFound =() => (
+  <div>404</div>
+)
+
 const FilmsPage = ({movies, setMovies})=> {
 
 
@@ -148,7 +152,6 @@ const UserProfile = ({movies, setMovies}) => {
 
   return (
     <div>
-      {/* <Header /> */}
       <div id="body">
         <Profile_Header />
         <Add_Films movies={movies} setUserMovies={setUserMovies} userMovies={userMovies} showForm={showForm} setShowForm={setShowForm} newRating={newRating} setNewRating={setNewRating} newReview={newReview} setNewReview={setNewReview} onSubmit={addUserRatingAndReview} setCurrentId={setCurrentId} />
@@ -162,17 +165,6 @@ const UserProfile = ({movies, setMovies}) => {
 
 
 
-// const Header = () => (
-//   <div id="header">
-//     <div>ChatterBOXD</div>
-//     <div>My Profile</div>
-//     <div>All Films</div>
-//     <div>All Users</div>
-//     <div>
-//       <input type="search"></input>
-//     </div>
-//   </div>
-// )
 
 const Profile_Header = () => (
   <div id="profile_header">
@@ -401,6 +393,7 @@ function App() {
       <Route path="/profile" element={<UserProfile movies={movies} setMovies={setMovies} />}/>
       <Route path="/films" element={<FilmsPage movies={movies} setMovies={setMovies}/>}/>
       <Route path="/users" element={<UsersPage/>}/>
+      <Route path="*" element={<NotFound />}/>
 
     </Routes>
   </Router>
