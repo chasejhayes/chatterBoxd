@@ -9,15 +9,58 @@ import './style.css'
 
 const Home = () => {
   return (
-    <div>
+    <div id="body">
       Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea praesentium quo autem! Saepe qui enim nesciunt quia suscipit. Dolorem minima cumque quasi explicabo consequatur ab possimus, perferendis dolore doloribus consectetur.
     </div>
   )
 }
 
-const UserProfile = () => {
+const FilmsPage = ({movies, setMovies})=> {
 
-  const [movies, setMovies] = useState([]);
+
+  useEffect(() => {
+    axios.get('/api/movies')
+      .then((response) => {
+        setMovies(response.data)
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+
+  }, [])
+
+  return (
+    <div id="body">
+      <ul>
+        {movies.map((item) =>
+        <li key={item.id}>
+          <h2>{item.title} {item.rating}</h2>
+            <p>Directed By: {item.director}</p>
+            <h3>Description</h3>
+            <p>{item.description}</p>
+            <p>Average Rating: {item.averageRating}</p>
+            <p>Reviews: {item.reviews}</p>
+            <p>{item.review}{item.rating}</p>
+        </li>
+        )}
+      </ul>
+    </div>
+  )
+}
+
+const UsersPage = () => {
+  return (
+    <div id="body">
+      <p>User 1</p>
+      <p>User 2</p>
+      <p>User 3</p>
+    </div>
+  )
+}
+
+const UserProfile = ({movies, setMovies}) => {
+
+ 
   const [userMovies, setUserMovies] = useState([])
   const [showForm, setShowForm] = useState(false)
   const [newRating, setNewRating] = useState("")
@@ -339,6 +382,7 @@ const Add_Films = ({ movies, showForm, setShowForm, onSubmit, newRating, setNewR
 
 
 function App() {
+   const [movies, setMovies] = useState([]);
 
 
 
@@ -354,7 +398,9 @@ function App() {
 
     <Routes>
       <Route path="/" element={<Home />}/>
-      <Route path="/profile" element={<UserProfile />}/>
+      <Route path="/profile" element={<UserProfile movies={movies} setMovies={setMovies} />}/>
+      <Route path="/films" element={<FilmsPage movies={movies} setMovies={setMovies}/>}/>
+      <Route path="/users" element={<UsersPage/>}/>
 
     </Routes>
   </Router>
