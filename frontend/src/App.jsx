@@ -4,23 +4,34 @@ import {
   Routes, Route, Link
 } from 'react-router-dom'
 import { useParams } from 'react-router-dom'
+import { Outlet } from 'react-router-dom'
 import { useEffect, useState } from "react"
 import './style.css'
 
 
 const Home = () => {
   return (
-    <div id="body">
-      Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea praesentium quo autem! Saepe qui enim nesciunt quia suscipit. Dolorem minima cumque quasi explicabo consequatur ab possimus, perferendis dolore doloribus consectetur.
+    <div id="body" className="homePage">
+      <h1>Welcome to ChatterBOXD</h1>
+      <div>
+        <Link to="/aboutme">About Me</Link>
+      </div>
+      <Outlet />
     </div>
   )
 }
 
-const NotFound =() => (
+const NotFound = () => (
   <div>404</div>
 )
 
-const MoviesPage = ({movies, setMovies})=> {
+const AboutMe = () => {
+  return (
+  <div>Testing nested routes</div>
+  )
+}
+
+const MoviesPage = ({ movies, setMovies }) => {
 
 
   useEffect(() => {
@@ -38,38 +49,38 @@ const MoviesPage = ({movies, setMovies})=> {
     <div id="body">
       <ul>
         {movies.map((item) =>
-        <li key={item.id}>
-          <Link to={`/movies/${item.id}`}>{item.title}</Link>
-          {/* <h2>{item.title} {item.rating}</h2>
+          <li key={item.id}>
+            <Link to={`/movies/${item.id}`}>{item.title}</Link>
+            {/* <h2>{item.title} {item.rating}</h2>
             <p>Directed By: {item.director}</p>
             <h3>Description</h3>
             <p>{item.description}</p>
             <p>Average Rating: {item.averageRating}</p>
             <p>Reviews: {item.reviews}</p>
             <p>{item.review}{item.rating}</p> */}
-        </li>
+          </li>
         )}
       </ul>
     </div>
   )
 }
 
-const Movies = ({movies}) => {
+const Movies = ({ movies }) => {
 
   const id = useParams().id
   const item = movies.find(n => n.id === id)
 
-  return(
-        <div id="body">
-          <ul>
-            <h2>{item.title} {item.rating}</h2>
-              <p>Directed By: {item.director}</p>
-              <h3>Description</h3>
-              <p>{item.description}</p>
-              <p>Average Rating: {item.averageRating}</p>
-              <p>Reviews: {item.reviews}</p>
-              <p>{item.review}{item.rating}</p>
-          </ul>
+  return (
+    <div id="body">
+      <ul>
+        <h2>{item.title} {item.rating}</h2>
+        <p>Directed By: {item.director}</p>
+        <h3>Description</h3>
+        <p>{item.description}</p>
+        <p>Average Rating: {item.averageRating}</p>
+        <p>Reviews: {item.reviews}</p>
+        <p>{item.review}{item.rating}</p>
+      </ul>
     </div>
   )
 }
@@ -84,9 +95,9 @@ const UsersPage = () => {
   )
 }
 
-const UserProfile = ({movies, setMovies}) => {
+const UserProfile = ({ movies, setMovies }) => {
 
- 
+
   const [userMovies, setUserMovies] = useState([])
   const [showForm, setShowForm] = useState(false)
   const [newRating, setNewRating] = useState("")
@@ -97,7 +108,7 @@ const UserProfile = ({movies, setMovies}) => {
   const [searchValue, setSearchValue] = useState('')
   const [searchArr, setSearchArr] = useState([])
   const [toggleSearch, setToggleSearch] = useState(false)
-  
+
 
 
 
@@ -114,16 +125,16 @@ const UserProfile = ({movies, setMovies}) => {
 
   useEffect(() => {
     axios.get('/api/movies')
-    .then((res) => {
-      let userMov = []
-      for(res of res.data){
-        if(res.rating && res.review){
-          userMov.push(res)
+      .then((res) => {
+        let userMov = []
+        for (res of res.data) {
+          if (res.rating && res.review) {
+            userMov.push(res)
+          }
         }
-      }
-      setUserMovies(userMov)
+        setUserMovies(userMov)
 
-    })
+      })
   }, [])
 
   // 
@@ -200,7 +211,7 @@ const Profile_Header = () => (
 
 
 
-const MovieDisplay = ({ userMovies, deleteMovies, toggleFilter, filter, showForm, setShowForm, onSubmit, newRating, setNewRating, newReview, setNewReview, setCurrentId, toggleSearch, searchArr}) => {
+const MovieDisplay = ({ userMovies, deleteMovies, toggleFilter, filter, showForm, setShowForm, onSubmit, newRating, setNewRating, newReview, setNewReview, setCurrentId, toggleSearch, searchArr }) => {
 
   let displayType = userMovies
 
@@ -216,7 +227,7 @@ const MovieDisplay = ({ userMovies, deleteMovies, toggleFilter, filter, showForm
     console.log(filter)
     console.log(displayType)
   }
-  if(toggleSearch === true){
+  if (toggleSearch === true) {
     displayType = searchArr
     console.log(displayType)
   }
@@ -301,31 +312,31 @@ const SortDropdown = ({ setUserMovies, userMovies }) => {
   )
 }
 
-const SearchBar = ({ userMovies, searchArr, setSearchArr, searchValue, setSearchValue, setToggleSearch}) => {
+const SearchBar = ({ userMovies, searchArr, setSearchArr, searchValue, setSearchValue, setToggleSearch }) => {
 
 
- function filterByName(e){
-  setToggleSearch(true)
-  setSearchValue(e.target.value)
-  let filtered = userMovies.filter(movie => movie.title.startsWith(e.target.value))
-  setSearchArr(filtered)
-  console.log(searchArr)
+  function filterByName(e) {
+    setToggleSearch(true)
+    setSearchValue(e.target.value)
+    let filtered = userMovies.filter(movie => movie.title.startsWith(e.target.value))
+    setSearchArr(filtered)
+    console.log(searchArr)
 
-  if(e.target.value === ""){
-    setToggleSearch(false)
+    if (e.target.value === "") {
+      setToggleSearch(false)
+    }
+
   }
 
- }
-
   return (
-    <input 
-    value={searchValue}
-    onChange={(e) => filterByName(e)}/>
+    <input
+      value={searchValue}
+      onChange={(e) => filterByName(e)} />
   )
 }
 
 
-const Body_Right = ({ userMovies, deleteMovies, setCurrentId, setUserMovies, toggleFilter, setToggleFilter, filter, setFilter, setShowForm, onSubmit, newRating, newReview, setNewRating, setNewReview, searchArr, setSearchArr, searchValue, setSearchValue, toggleSearch, setToggleSearch}) => (
+const Body_Right = ({ userMovies, deleteMovies, setCurrentId, setUserMovies, toggleFilter, setToggleFilter, filter, setFilter, setShowForm, onSubmit, newRating, newReview, setNewRating, setNewReview, searchArr, setSearchArr, searchValue, setSearchValue, toggleSearch, setToggleSearch }) => (
   <div id="body_right">
     <div id="films_header">My Films</div>
     <div id="films_UI">
@@ -334,7 +345,7 @@ const Body_Right = ({ userMovies, deleteMovies, setCurrentId, setUserMovies, tog
       <FilterDropdown userMovies={userMovies} setUserMovies={setUserMovies} toggleFilter={toggleFilter} setToggleFilter={setToggleFilter} filter={filter} setFilter={setFilter} />
     </div>
     <SearchBar userMovies={userMovies} searchArr={searchArr} setSearchArr={setSearchArr} searchValue={searchValue} setSearchValue={setSearchValue} toggleSearch={toggleSearch} setToggleSearch={setToggleSearch} />
-    <MovieDisplay userMovies={userMovies} deleteMovies={deleteMovies} setCurrentId={setCurrentId} toggleFilter={toggleFilter} setToggleFilter={setToggleFilter} filter={filter} setFilter={setFilter} setShowForm={setShowForm} onSubmit={onSubmit} newRating={newRating} newReview={newReview} setNewRating={setNewRating} setNewReview={setNewReview} setCurrentId={setCurrentId} toggleSearch={toggleSearch} searchArr={searchArr}/>
+    <MovieDisplay userMovies={userMovies} deleteMovies={deleteMovies} setCurrentId={setCurrentId} toggleFilter={toggleFilter} setToggleFilter={setToggleFilter} filter={filter} setFilter={setFilter} setShowForm={setShowForm} onSubmit={onSubmit} newRating={newRating} newReview={newReview} setNewRating={setNewRating} setNewReview={setNewReview} setCurrentId={setCurrentId} toggleSearch={toggleSearch} searchArr={searchArr} />
   </div>
 )
 
@@ -396,32 +407,34 @@ const Add_Films = ({ movies, showForm, setShowForm, onSubmit, newRating, setNewR
 
 
 function App() {
-   const [movies, setMovies] = useState([]);
+  const [movies, setMovies] = useState([]);
 
 
 
   return (
-  <Router>
-    <div id="header">
-      <div>chatterBOXD</div>
-      <Link to="/">home</Link>
-      <Link to="/profile">profile</Link>
-      <Link to="/users">users</Link>
-      <Link to="/movies">movies</Link>
-    </div>
+    <Router>
+      <div id="header">
+        <div>chatterBOXD</div>
+        <Link to="/">home</Link>
+        <Link to="/profile">profile</Link>
+        <Link to="/users">users</Link>
+        <Link to="/movies">movies</Link>
+      </div>
 
-    <Routes>
-      <Route path="/movies/:id" element={
-        <Movies movies={movies}/>
-      }/> 
-      <Route path="/" element={<Home />}/>
-      <Route path="/profile" element={<UserProfile movies={movies} setMovies={setMovies} />}/>
-      <Route path="/movies" element={<MoviesPage movies={movies} setMovies={setMovies}/>}/>
-      <Route path="/users" element={<UsersPage/>}/>
-      <Route path="*" element={<NotFound />}/>
+      <Routes>
+        <Route path="/movies/:id" element={
+          <Movies movies={movies} />
+        } />
+        <Route path="/" element={<Home />}>
+          <Route path="/aboutme" element={<AboutMe />} />
+        </Route>
+        <Route path="/profile" element={<UserProfile movies={movies} setMovies={setMovies} />} />
+        <Route path="/movies" element={<MoviesPage movies={movies} setMovies={setMovies} />} />
+        <Route path="/users" element={<UsersPage />} />
+        <Route path="*" element={<NotFound />} />
 
-    </Routes>
-  </Router>
+      </Routes>
+    </Router>
   )
 }
 
