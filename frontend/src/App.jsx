@@ -8,6 +8,24 @@ import { Outlet } from 'react-router-dom'
 import { useEffect, useState } from "react"
 import './style.css'
 
+const useMovies = () => {
+
+  const [movies, setMovies] = useState([]);
+
+  useEffect(() => {
+    axios.get('/api/movies')
+      .then((response) => {
+        setMovies(response.data)
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+
+  }, [])
+
+  return { movies, setMovies}
+
+}
 
 const Home = () => {
   return (
@@ -31,19 +49,7 @@ const AboutMe = () => {
   )
 }
 
-const MoviesPage = ({ movies, setMovies }) => {
-
-
-  useEffect(() => {
-    axios.get('/api/movies')
-      .then((response) => {
-        setMovies(response.data)
-      })
-      .catch((error) => {
-        console.log(error)
-      })
-
-  }, [])
+const MoviesPage = ({ movies }) => {
 
   return (
     <div id="body">
@@ -95,7 +101,7 @@ const UsersPage = () => {
   )
 }
 
-const UserProfile = ({ movies, setMovies }) => {
+const UserProfile = ({ movies }) => {
 
 
   const [userMovies, setUserMovies] = useState([])
@@ -109,19 +115,6 @@ const UserProfile = ({ movies, setMovies }) => {
   const [searchArr, setSearchArr] = useState([])
   const [toggleSearch, setToggleSearch] = useState(false)
 
-
-
-
-  useEffect(() => {
-    axios.get('/api/movies')
-      .then((response) => {
-        setMovies(response.data)
-      })
-      .catch((error) => {
-        console.log(error)
-      })
-
-  }, [])
 
   useEffect(() => {
     axios.get('/api/movies')
@@ -137,7 +130,6 @@ const UserProfile = ({ movies, setMovies }) => {
       })
   }, [])
 
-  // 
 
 
   function addUserRatingAndReview(e) {
@@ -407,7 +399,7 @@ const Add_Films = ({ movies, showForm, setShowForm, onSubmit, newRating, setNewR
 
 
 function App() {
-  const [movies, setMovies] = useState([]);
+  const { movies, setMovies } = useMovies();
 
 
 
