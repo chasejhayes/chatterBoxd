@@ -1,31 +1,8 @@
-const express = require('express')
-const cors = require('cors')
-const app = express()
-const mongoose = require('mongoose')
-require('dotenv').config()
-const config = require('./utils/config')
-const logger = require('./utils/logger')
-
-app.use(express.static('dist'))
-app.use(express.json())
-app.use(cors())
+const movieRouter = require('express').Router()
+const Movie = require('../models/movie')
 
 
-
-
-// userSchema.set('toJSON', {
-//     transform: (document, returnedObject) => {
-//         returnedObject.id = returnedObject._id.toString()
-//         delete returnedObject._id
-//         delete returnedObject.__v
-//         delete returnedObject.passwordHash
-//     }
-// })
-
-// const User = mongoose.model('User', userSchema)
-
-
-app.get('/api/movies', (req, res) => {
+movieRouter.get('/', (req, res) => {
     Movie.find({}).then(movies => {
         res.json(movies)
     })
@@ -35,7 +12,7 @@ app.get('/api/movies', (req, res) => {
     })
 })
 
-app.get('/api/movies/:id', (req, res, next) => {
+movieRouter.get('/:id', (req, res, next) => {
     Movie.findById(req.params.id)
         .then(movie => {
             if (movie) {
@@ -49,7 +26,7 @@ app.get('/api/movies/:id', (req, res, next) => {
 
 
 
-app.post('/api/movies', (req, res, next) => {
+movieRouter.post('/', (req, res, next) => {
     const body = req.body
 
     // if (!body.title) {
@@ -74,7 +51,7 @@ app.post('/api/movies', (req, res, next) => {
 })
 
 
-app.patch('/api/movies/:id', (req, res, next) => {
+movieRouter.patch('/:id', (req, res, next) => {
     const { rating, review } = req.body
 
     console.log(`Id is: ${req.params.id}`)
@@ -95,7 +72,7 @@ app.patch('/api/movies/:id', (req, res, next) => {
         .catch(error => next(error))
 })
 
-app.delete('/api/movies/:id', (req, res, next) => {
+movieRouter.delete('/:id', (req, res, next) => {
     Movie.findById(req.params.id)
         .then(movie => {
             movie.review = ""
@@ -110,34 +87,4 @@ app.delete('/api/movies/:id', (req, res, next) => {
 })
 
 
-
-
-
-
-
-const unknownEndpoint = (req, res) => {
-    res.status(404).send({ error: 'unknown endpoint' })
-}
-
-app.use(unknownEndpoint)
-
-const errorHandler = (error, req, res, next) => {
-    console.error(error.message)
-
-    if(error.name === 'CastError') {
-        return res.status(400).send({ error: 'malformatted id' })
-    } else if (error.name === 'ValidationError'){
-        return res.status(400).json({ error: error.message})
-    }
-
-    next(error)
-}
-
-app.use(errorHandler)
-
-
-
-
-app.listen((config.PORT), () => {
-    logger.info(`Server running on port ${config.PORT}`)
-})
+module.exports = movieRouter

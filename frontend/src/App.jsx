@@ -438,4 +438,16 @@ export default App
 // { id: 1, title: "The Blue Gardenia", director: "Fritz Land", releaseDate: 1953, description: "Deeply distraught...", averageRating: 0, reviews: [], rating: 9 },
 //   { id: 2, title: "Night and the City", director: "Jules Dassin", releaseDate: 1950, description: "Londoner Harry Fabian (Richard Widmark)...", averageRating: 0, reviews: [], rating: 4, review: "" },
 //   { id: 3, title: "Niagara", director: "Henry Hathaway", releaseDate: 1953, description: "Rose Loomis (Marilyn Monroe) and her older...", averageRating: 0, reviews: [], rating: 3},
-//  { id: 4, title: "Niagara", director: "Henry Hathaway", releaseDate: 1953, description: "Rose Loomis (Marilyn Monroe) and her older...", averageRating: 0, reviews: [], rating: 7}
+//  { id: 4, title: "Niagara", 
+// director: "Henry Hathaway", 
+// releaseDate: 1953, 
+// description: "Rose Loomis (Marilyn Monroe) and her older...", 
+// averageRating: 0, 
+// userInfo: {
+// userID: Number,
+// userReview: "",
+// userRating: Number
+// }
+// }
+
+// U
