@@ -1,140 +1,17 @@
-const express = require('express')
-const cors = require('cors')
-const app = express()
-const mongoose = require('mongoose')
-require('dotenv').config()
+// const express = require('express')
+// const cors = require('cors')
+// const app = express()
+// const mongoose = require('mongoose')
+// require('dotenv').config()
+
+
+// app.use(express.static('dist'))
+// app.use(express.json())
+// app.use(cors())
+
+const app = require('./app')
 const config = require('./utils/config')
 const logger = require('./utils/logger')
-
-app.use(express.static('dist'))
-app.use(express.json())
-app.use(cors())
-
-
-
-
-// userSchema.set('toJSON', {
-//     transform: (document, returnedObject) => {
-//         returnedObject.id = returnedObject._id.toString()
-//         delete returnedObject._id
-//         delete returnedObject.__v
-//         delete returnedObject.passwordHash
-//     }
-// })
-
-// const User = mongoose.model('User', userSchema)
-
-
-app.get('/api/movies', (req, res) => {
-    Movie.find({}).then(movies => {
-        res.json(movies)
-    })
-    .catch(error => {
-        console.log(error)
-        res.status(500).end()
-    })
-})
-
-app.get('/api/movies/:id', (req, res, next) => {
-    Movie.findById(req.params.id)
-        .then(movie => {
-            if (movie) {
-                res.json(movie)
-            } else {
-                res.status(404).end()
-            }
-        })
-        .catch(error => next(error))
-})
-
-
-
-app.post('/api/movies', (req, res, next) => {
-    const body = req.body
-
-    // if (!body.title) {
-    //     return res.status(400).json({ error: 'content missing' }) 
-    // }
-
-    const movie = new Movie({
-        title: body.title,
-        director: body.director,
-        releaseDate: body.releaseDate,
-        description: body.description,
-        averageRating: body.averageRating,
-        reviews: body.reviews,
-        review: body.review,
-        rating: body.rating
-    })
-
-    movie.save().then(savedMovie => {
-        res.json(savedMovie)
-    })
-    .catch(error => next(error))
-})
-
-
-app.patch('/api/movies/:id', (req, res, next) => {
-    const { rating, review } = req.body
-
-    console.log(`Id is: ${req.params.id}`)
-
-    Movie.findById(req.params.id)
-        .then(movie => {
-            if (!movie) {
-                return res.status(404).end()
-            }
-
-            movie.rating = rating
-            movie.review = review
-
-            return movie.save().then((updatedMovie) => {
-                res.json(updatedMovie)
-            })
-        })
-        .catch(error => next(error))
-})
-
-app.delete('/api/movies/:id', (req, res, next) => {
-    Movie.findById(req.params.id)
-        .then(movie => {
-            movie.review = ""
-            movie.rating = ""
-
-            return movie.save().then((updatedMovie) => {
-                res.json(updatedMovie)
-            })
-
-        })
-        .catch(error => next(error))
-})
-
-
-
-
-
-
-
-const unknownEndpoint = (req, res) => {
-    res.status(404).send({ error: 'unknown endpoint' })
-}
-
-app.use(unknownEndpoint)
-
-const errorHandler = (error, req, res, next) => {
-    console.error(error.message)
-
-    if(error.name === 'CastError') {
-        return res.status(400).send({ error: 'malformatted id' })
-    } else if (error.name === 'ValidationError'){
-        return res.status(400).json({ error: error.message})
-    }
-
-    next(error)
-}
-
-app.use(errorHandler)
-
 
 
 
