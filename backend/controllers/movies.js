@@ -1,5 +1,6 @@
 const movieRouter = require('express').Router()
 const Movie = require('../models/movie')
+const User = require('../models/user')
 
 
 movieRouter.get('/', (req, res) => {
@@ -72,20 +73,27 @@ movieRouter.patch('/:id', (req, res, next) => {
         .catch(error => next(error))
 })
 
-movieRouter.delete('/:id', (req, res, next) => {
-    Movie.findById(req.params.id)
-        .then(movie => {
-            movie.review = ""
-            movie.rating = ""
+// movieRouter.delete('/:id', (req, res, next) => {
+//     Movie.findById(req.params.id)
+//         .then(movie => {
+//             movie.review = ""
+//             movie.rating = ""
 
-            return movie.save().then((updatedMovie) => {
-                res.json(updatedMovie)
-            })
+//             return movie.save().then((updatedMovie) => {
+//                 res.json(updatedMovie)
+//             })
 
-        })
-        .catch(error => next(error))
+//         })
+//         .catch(error => next(error))
+// })
+
+movieRouter.delete('/:id', async (req, res) => {
+    await Movie.findByIdAndDelete(req.params.id)
+    res.status(204).end()
 })
 
+
+// delete route is only working for review and rating; no way to fully delete
 
 
 
