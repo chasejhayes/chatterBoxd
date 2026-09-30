@@ -43,6 +43,17 @@ const movieSchema = new mongoose.Schema({
     rating: {
         type: Number,
     },
+    ranking: {
+        userRanking: {
+            rating: Number,
+            review: String,
+            user: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'user'
+            },
+            rankingID: Number
+        }
+    }
 
 })
 
@@ -57,3 +68,7 @@ movieSchema.set('toJSON', {
 
 
 module.exports = mongoose.model('Movie', movieSchema)
+
+
+// each movie has a 'ranking' object that contains the user's rating and review and the user's id
+// user has an array of rankingIDs
