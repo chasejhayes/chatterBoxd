@@ -40,8 +40,7 @@ movieRouter.post('/', (req, res, next) => {
         releaseDate: body.releaseDate,
         description: body.description,
         averageRating: body.averageRating,
-        reviews: body.reviews,
-        review: body.review,
+        allReviews: body.reviews,
         rating: body.rating
     })
 
@@ -51,28 +50,69 @@ movieRouter.post('/', (req, res, next) => {
     .catch(error => next(error))
 })
 
+// 
+
+// movieRouter.post('/:id', (req, res, next) => {
+//     const {rating, review, user} = req.body
+
+//     console.log(`Id is: ${req.params.id}`)
+
+//     Movie.findById(req.params.id)
+//     .then(
+//         ranking[user]: user,
+//     )
+// })
+
+// What exactly is happening?
+// 
 
 movieRouter.patch('/:id', (req, res, next) => {
-    const { rating, review } = req.body
 
+    const { rating, user } = req.body;
+    console.log (rating, user)
     console.log(`Id is: ${req.params.id}`)
-
     Movie.findById(req.params.id)
-        .then(movie => {
-            if (!movie) {
-                return res.status(404).end()
-            }
+    .then((movie) =>{
+        console.log(movie.users),
+        movie.users.push(req.body)
 
-            movie.rating = rating
-            movie.review = review
-
-            return movie.save().then((updatedMovie) => {
-                res.json(updatedMovie)
-            })
+        return movie.save().then((updatedMovie) => {
+            res.json(updatedMovie)
         })
-        .catch(error => next(error))
+
+    } 
+    )
+
 })
 
+// return movie.save().then((updatedMovie) => {
+// //                 res.json(updatedMovie)
+//             })
+
+
+// movieRouter.patch('/:id', (req, res, next) => {
+//     const { rating, review, user } = req.body
+
+//     console.log(`Id is: ${req.params.id}`)
+
+//     Movie.findById(req.params.id)
+//         .then(movie => {
+//             if (!movie) {
+//                 return res.status(404).end()
+//             }
+//             console.log(movie)
+//             movie.ranking.users = user
+//             // movie.ranking.userRanking = rating
+//             // movie.ranking.review = review
+
+//             return movie.save().then((updatedMovie) => {
+//                 res.json(updatedMovie)
+//             })
+//         })
+//         .catch(error => next(error))
+// })
+
+// deletes only review/rating
 // movieRouter.delete('/:id', (req, res, next) => {
 //     Movie.findById(req.params.id)
 //         .then(movie => {
@@ -87,6 +127,8 @@ movieRouter.patch('/:id', (req, res, next) => {
 //         .catch(error => next(error))
 // })
 
+
+// delete full entries
 movieRouter.delete('/:id', async (req, res) => {
     await Movie.findByIdAndDelete(req.params.id)
     res.status(204).end()

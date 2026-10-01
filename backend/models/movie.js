@@ -8,55 +8,65 @@ const movieSchema = new mongoose.Schema({
         minLength: 1,
         required: true
     },
-    director:  {
+    director: {
         type: String,
         minLength: 1,
         required: true
     },
-    releaseDate:  {
+    releaseDate: {
         type: String,
         minLength: 1,
         required: true
     },
-    description:  {
+    description: {
         type: String,
         minLength: 1,
         required: true
     },
-    averageRating:  {
+    averageRating: {
         type: Number,
         minLength: 1,
         required: true
     },
-    reviews: {
+    allReviews: {
         type: Array,
         minLength: 1,
         required: true
     },
-    review:  {
-        type: String,
+    users: {
+        type: Array,
+        required: true,
         user: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'User'
+            ref: 'User',
+            required: true
         }
-    },
-    rating: {
-        type: Number,
-    },
-    ranking: {
-        userRanking: {
-            rating: Number,
-            review: String,
-            user: {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'user'
-            },
-            rankingID: Number
-        }
+        // userRanking: {
+        //     type: Object,
+        //     rating: {
+        //         type: Number,
+        //         required: true
+        //     },
+        // review: {
+        //     type: String,
+        //     required: true
+        // },
+        // user: {
+        //     type: mongoose.Schema.Types.ObjectId,
+        //     ref: 'user'
+        // },
+        // rankingID: {
+        //     type: Number,
+        //     required: true
+        // }
     }
 
 })
 
+//  users: {
+//         type: mongoose.Schema.Types.ObjectId,
+//         ref: 'User'
+//     }
 movieSchema.set('toJSON', {
     transform: (document, returnedObject) => {
         returnedObject.id = returnedObject._id.toString()
