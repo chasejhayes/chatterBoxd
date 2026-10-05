@@ -40,46 +40,50 @@ movieRouter.post('/', async (req, res) => {
     
 })
 
-// 
-
-// movieRouter.post('/:id', (req, res, next) => {
-//     const {rating, review, user} = req.body
-
-//     console.log(`Id is: ${req.params.id}`)
-
-//     Movie.findById(req.params.id)
-//     .then(
-//         ranking[user]: user,
-//     )
-// })
-
 
 // Patch is 'posting' a new rating to an already existing movie
-movieRouter.patch('/:id', (req, res, next) => {
+// movieRouter.patch('/:id', (req, res, next) => {
 
-    const { rating, userID } = req.body;
-    const user = User.findById(user)
-    console.log(rating, user)
-    console.log(`Id is: ${req.params.id}`)
-    Movie.findById(req.params.id)
-        .then((movie) => {
-            console.log(movie.users),
-                movie.users.push(req.body)
+//     const { rating, userID } = req.body;
+//     const user = User.findById(user)
+//     console.log(rating, user)
+//     console.log(`Id is: ${req.params.id}`)
+//     Movie.findById(req.params.id)
+//         .then((movie) => {
+//             console.log(movie.users),
+//                 movie.users.push(req.body)
 
-            return movie.save().then((updatedMovie) => {
-                res.json(updatedMovie)
-            })
+//             return movie.save().then((updatedMovie) => {
+//                 res.json(updatedMovie)
+//             })
 
-        }
-        )
+//         }
+//         )
+
+// })
+
+// req body must include: rating, user id
+
+movieRouter.patch('/:id', async (req, res) => {
+    const {rating, userId } = req.body;
+
+
+    const user = await User.findById(userId)
+
+    const updatedMovie = await Movie.findById(req.params.id)
+
+    updatedMovie.users.push(req.body)
+
+    
+    const savedMovie = await updatedMovie.save()
+    user.rankings = user.rankings.concat(savedMovie.id)
+    await user.save()
+
+    res.json(savedMovie)
 
 })
 
-// return movie.save().then((updatedMovie) => {
-// //                 res.json(updatedMovie)
-//             })
-
-
+// patch for changing a rating on an already existing rating
 // movieRouter.patch('/:id', (req, res, next) => {
 //     const { rating, review, user } = req.body
 
