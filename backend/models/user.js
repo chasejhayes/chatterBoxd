@@ -23,3 +23,6 @@ userSchema.set('toJSON', {
 const User = mongoose.model('User', userSchema)
 
 module.exports = User
+
+// it's not the movie ID, it's the ranking ID (I think)
+// what I'm not getting is how the Object IDs relate to and access one another

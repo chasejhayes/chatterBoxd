@@ -14,9 +14,7 @@ const movieSchema = new mongoose.Schema({
         required: true
     },
     releaseDate: {
-        type: String,
-        minLength: 1,
-        required: true
+        type: String
     },
     description: {
         type: String,

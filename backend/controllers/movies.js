@@ -3,36 +3,27 @@ const Movie = require('../models/movie')
 const User = require('../models/user')
 
 
-movieRouter.get('/', (req, res) => {
-    Movie.find({}).then(movies => {
-        res.json(movies)
-    })
-    .catch(error => {
-        console.log(error)
-        res.status(500).end()
-    })
-})
-
-movieRouter.get('/:id', (req, res, next) => {
-    Movie.findById(req.params.id)
-        .then(movie => {
-            if (movie) {
-                res.json(movie)
-            } else {
-                res.status(404).end()
-            }
-        })
-        .catch(error => next(error))
+movieRouter.get('/', async (req, res) => {
+    const movie = await Movie.find({})
+    res.json(movie)
 })
 
 
 
-movieRouter.post('/', (req, res, next) => {
-    const body = req.body
+movieRouter.get('/:id', async (req, res, next) => {
+    const movie = await Movie.findById(req.params.id)
 
-    // if (!body.title) {
-    //     return res.status(400).json({ error: 'content missing' }) 
-    // }
+    if (movie) {
+        res.json(movie)
+    } else {
+        res.status(404).end()
+    }
+})
+
+
+
+movieRouter.post('/', async (req, res) => {
+    const body = await req.body
 
     const movie = new Movie({
         title: body.title,
@@ -44,10 +35,9 @@ movieRouter.post('/', (req, res, next) => {
         rating: body.rating
     })
 
-    movie.save().then(savedMovie => {
-        res.json(savedMovie)
-    })
-    .catch(error => next(error))
+    const newMovie = await movie.save()
+    res.json(newMovie)
+    
 })
 
 // 
@@ -63,25 +53,25 @@ movieRouter.post('/', (req, res, next) => {
 //     )
 // })
 
-// What exactly is happening?
-// 
 
+// Patch is 'posting' a new rating to an already existing movie
 movieRouter.patch('/:id', (req, res, next) => {
 
-    const { rating, user } = req.body;
-    console.log (rating, user)
+    const { rating, userID } = req.body;
+    const user = User.findById(user)
+    console.log(rating, user)
     console.log(`Id is: ${req.params.id}`)
     Movie.findById(req.params.id)
-    .then((movie) =>{
-        console.log(movie.users),
-        movie.users.push(req.body)
+        .then((movie) => {
+            console.log(movie.users),
+                movie.users.push(req.body)
 
-        return movie.save().then((updatedMovie) => {
-            res.json(updatedMovie)
-        })
+            return movie.save().then((updatedMovie) => {
+                res.json(updatedMovie)
+            })
 
-    } 
-    )
+        }
+        )
 
 })
 
@@ -113,18 +103,13 @@ movieRouter.patch('/:id', (req, res, next) => {
 // })
 
 // deletes only review/rating
-// movieRouter.delete('/:id', (req, res, next) => {
-//     Movie.findById(req.params.id)
-//         .then(movie => {
-//             movie.review = ""
-//             movie.rating = ""
+// movieRouter.delete('/:id', async (req, res) => {
+//     const movie = await Movie.findById(req.params.id)
+    // movie.review = ""
+    // movie.rating = ""
 
-//             return movie.save().then((updatedMovie) => {
-//                 res.json(updatedMovie)
-//             })
-
-//         })
-//         .catch(error => next(error))
+//     const savedMovie = await movie.save()
+//     res.json(savedMovie)
 // })
 
 
