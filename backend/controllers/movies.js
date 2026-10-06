@@ -4,9 +4,11 @@ const User = require('../models/user')
 
 
 movieRouter.get('/', async (req, res) => {
-    const movie = await Movie.find({})
+    const movie = await Movie.find({}).populate('users', {username: 1})
     res.json(movie)
 })
+
+
 
 
 
