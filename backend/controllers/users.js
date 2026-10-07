@@ -17,25 +17,21 @@ usersRouter.post('/', async (req, res) => {
     res.status(201).json(savedUser)
 })
 
+
+
 usersRouter.get('/', async (req, res) => {
-    const users1 = await User.find({})
-    console.log
-    const users = await User.find({}).populate({
-        path: "rankings", match: {
-            'users.userId': /^6/i
-        }, select: "users.userId"
 
-
-    })
-    // console.log(`Test: ${users.id}`)
+    const users = await User.find({}).populate('rankings')
     res.json(users)
 })
 
 
-// , match: {'id':{$eq: users[userId]}}})
-    // const filtered = await users.filter((reviews => reviews.userId != null))
+usersRouter.delete('/:id', async (req, res) => {
+    const users = await User.findByIdAndDelete(req.params.id)
+    res.status(204).end()
+})
 
-// What is happening here?
-// the populate fills 'rankings' with what is found in 'Movie' db
+
+
 
 module.exports = usersRouter

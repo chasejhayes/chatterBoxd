@@ -6,7 +6,7 @@ const userSchema = new mongoose.Schema({
     rankings: [
         {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'Movie'
+            ref: 'Ranking'
         }
     ]
 })

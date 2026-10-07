@@ -5,6 +5,7 @@ const logger = require('./utils/logger')
 const middleware = require('./utils/middleware')
 const movieRouter = require('./controllers/movies')
 const usersRouter = require('./controllers/users')
+const rankingsRouter = require('./controllers/rankings')
 
 const app = express()
 
@@ -27,6 +28,7 @@ app.use(middleware.requestLogger)
 
 app.use('/api/movies', movieRouter)
 app.use('/api/users', usersRouter)
+app.use('/api/rankings', rankingsRouter)
 
 app.use(middleware.unknownEndpoint)
 app.use(middleware.errorHandler)

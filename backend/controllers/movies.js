@@ -4,7 +4,7 @@ const User = require('../models/user')
 
 
 movieRouter.get('/', async (req, res) => {
-    const movie = await Movie.find({}).populate('users', {username: 1})
+    const movie = await Movie.find({}).populate('rankings')
     res.json(movie)
 })
 
@@ -29,12 +29,7 @@ movieRouter.post('/', async (req, res) => {
 
     const movie = new Movie({
         title: body.title,
-        director: body.director,
-        releaseDate: body.releaseDate,
-        description: body.description,
-        averageRating: body.averageRating,
-        allReviews: body.reviews,
-        rating: body.rating
+        rankings: body.rankings
     })
 
     const newMovie = await movie.save()
