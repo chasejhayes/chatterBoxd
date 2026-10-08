@@ -11,6 +11,16 @@ rankingRouter.get('/', async (req, res) => {
     res.json(rankings)
 })
 
+rankingRouter.get('/:id', async (req, res, next) => {
+    const rankings = await Ranking.findById(req.params.id)
+      if (rankings) {
+        res.json(rankings)
+    } else {
+        res.status(404).end()
+    }
+
+})
+
 rankingRouter.post('/', async (req, res) => {
     const body = await req.body
 
