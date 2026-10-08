@@ -2,7 +2,8 @@ const mongoose = require('mongoose')
 
 const rankingSchema = new mongoose.Schema({
     rating: Number,
-    movie: String,
+    review: String,
+    movieId: String,
     userId: String
 })
 

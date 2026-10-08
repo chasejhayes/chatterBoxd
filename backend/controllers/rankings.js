@@ -1,5 +1,9 @@
 const rankingRouter = require('express').Router()
+
 const Ranking = require('../models/ranking')
+const Movie = require('../models/movie')
+const User = require('../models/user')
+
 
 rankingRouter.get('/', async (req, res) => {
     const rankings = await Ranking.find({})
@@ -12,12 +16,24 @@ rankingRouter.post('/', async (req, res) => {
 
     const ranking = new Ranking({
         rating: body.rating,
-        movie: body.movie,
+        review: body.review,
+        movieId: body.movieId,
         userId: body.userId
     })
 
+    await Movie.findByIdAndUpdate(req.body.movieId,
+        {$push: {rankings: ranking.id }}
+    )
+    await User.findByIdAndUpdate(req.body.userId,
+        {$push: {rankings: ranking.id}}
+    )
     const newRanking = await ranking.save()
     res.json(newRanking)
+})
+
+rankingRouter.delete('/:id', async (req, res) => {
+    await Ranking.findByIdAndDelete(req.params.id)
+    res.status(204).end()
 })
 
 
