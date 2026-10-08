@@ -33,6 +33,12 @@ rankingRouter.post('/', async (req, res) => {
 
 rankingRouter.delete('/:id', async (req, res) => {
     await Ranking.findByIdAndDelete(req.params.id)
+    await User.findByIdAndUpdate(req.body.userId,
+        {$pull: {rankings: ranking.id}}
+    );
+    await Movie.findByIdAndUpdate(req.body.movieId,
+        {$pull: {rankings: ranking.id}}
+    )
     res.status(204).end()
 })
 
