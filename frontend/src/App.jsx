@@ -15,6 +15,7 @@ const useMovies = () => {
   useEffect(() => {
     axios.get('/api/movies')
       .then((response) => {
+        console.log(response)
         setMovies(response.data)
       })
       .catch((error) => {
@@ -57,13 +58,6 @@ const MoviesPage = ({ movies }) => {
         {movies.map((item) =>
           <li key={item.id}>
             <Link to={`/movies/${item.id}`}>{item.title}</Link>
-            {/* <h2>{item.title} {item.rating}</h2>
-            <p>Directed By: {item.director}</p>
-            <h3>Description</h3>
-            <p>{item.description}</p>
-            <p>Average Rating: {item.averageRating}</p>
-            <p>Reviews: {item.reviews}</p>
-            <p>{item.review}{item.rating}</p> */}
           </li>
         )}
       </ul>
@@ -71,10 +65,18 @@ const MoviesPage = ({ movies }) => {
   )
 }
 
-const Movies = ({ movies }) => {
 
+
+const Movies = ({ movies, setMovies }) => {
+  console.log(movies)
   const id = useParams().id
   const item = movies.find(n => n.id === id)
+  console.log(item)
+  console.log(movies)
+
+  if(!item){
+    return <div>Loading...</div>
+  }
 
   return (
     <div id="body">
@@ -415,7 +417,7 @@ function App() {
 
       <Routes>
         <Route path="/movies/:id" element={
-          <Movies movies={movies} />
+          <Movies movies={movies} setMovie={setMovies}/>
         } />
         <Route path="/" element={<Home />}>
           <Route path="/aboutme" element={<AboutMe />} />
