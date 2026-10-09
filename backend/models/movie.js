@@ -8,6 +8,8 @@ const movieSchema = new mongoose.Schema({
         minLength: 1,
         required: true
     },
+    director: String,
+    description: String,
     rankings: [
         {
             type: mongoose.Schema.Types.ObjectId,
