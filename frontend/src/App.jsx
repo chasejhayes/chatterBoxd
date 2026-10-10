@@ -15,7 +15,6 @@ const useMovies = () => {
   useEffect(() => {
     axios.get('/api/movies')
       .then((response) => {
-        console.log(response)
         setMovies(response.data)
       })
       .catch((error) => {
@@ -67,27 +66,30 @@ const MoviesPage = ({ movies }) => {
 
 
 
-const Movies = ({ movies, setMovies }) => {
-  console.log(movies)
+const Movies = ({ movies }) => {
   const id = useParams().id
   const item = movies.find(n => n.id === id)
-  console.log(item)
-  console.log(movies)
 
   if(!item){
     return <div>Loading...</div>
   }
+  console.log(item)
 
   return (
     <div id="body">
       <ul>
-        <h2>{item.title} {item.rating}</h2>
+        <h2>{item.title}</h2>
         <p>Directed By: {item.director}</p>
         <h3>Description</h3>
         <p>{item.description}</p>
-        <p>Average Rating: {item.averageRating}</p>
-        <p>Reviews: {item.reviews}</p>
-        <p>{item.review}{item.rating}</p>
+        <h4>Reviews</h4>
+        <ul>
+          {item.rankings.map((ranking) => 
+          <li>
+            <p>{ranking.rating}</p>
+            <p>{ranking.review}</p>
+          </li>)}
+        </ul>
       </ul>
     </div>
   )
@@ -436,20 +438,3 @@ export default App
 
 
 
-
-// { id: 1, title: "The Blue Gardenia", director: "Fritz Land", releaseDate: 1953, description: "Deeply distraught...", averageRating: 0, reviews: [], rating: 9 },
-//   { id: 2, title: "Night and the City", director: "Jules Dassin", releaseDate: 1950, description: "Londoner Harry Fabian (Richard Widmark)...", averageRating: 0, reviews: [], rating: 4, review: "" },
-//   { id: 3, title: "Niagara", director: "Henry Hathaway", releaseDate: 1953, description: "Rose Loomis (Marilyn Monroe) and her older...", averageRating: 0, reviews: [], rating: 3},
-//  { id: 4, title: "Niagara", 
-// director: "Henry Hathaway", 
-// releaseDate: 1953, 
-// description: "Rose Loomis (Marilyn Monroe) and her older...", 
-// averageRating: 0, 
-// userInfo: {
-// userID: Number,
-// userReview: "",
-// userRating: Number
-// }
-// }
-
-// U
