@@ -8,6 +8,7 @@ import { Outlet } from 'react-router-dom'
 import { useEffect, useState } from "react"
 import './style.css'
 
+
 const useMovies = () => {
 
   const [movies, setMovies] = useState([]);
