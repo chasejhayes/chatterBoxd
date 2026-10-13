@@ -7,6 +7,7 @@ import { useParams } from 'react-router-dom'
 import { Outlet } from 'react-router-dom'
 import { useEffect, useState } from "react"
 import './style.css'
+import loginService from './services/login'
 
 
 const useMovies = () => {
@@ -28,12 +29,29 @@ const useMovies = () => {
 
 }
 
+  let token = null
+
+  const setToken = newToken => {
+    token = `Bearer ${newToken}`
+  }
+
+
 const Home = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const [user, setUser] = useState(null)
 
-  const handleLogin = (e) => {
-    e.preventDefault()
+  const handleLogin = async event => {
+    event.preventDefault()
+    try {
+      const user = await loginService.login({ username, password })
+      setToken(user.token)
+      setUser(user)
+      setUsername('')
+      setPassword('')
+    } catch {
+      console.log('error: wrong credentials')
+    }
     console.log('logging in with', username, password)
   }
   return (
@@ -174,17 +192,25 @@ const UserProfile = ({ movies }) => {
   function addUserRatingAndReview(e) {
     e.preventDefault()
     let id = currentId;
+    console.log
 
-    let patchRequest =
+    const config = {
+      headers: { Authorization: token }
+    }
+
+    let postRequest =
     {
       rating: newRating,
       review: newReview,
+      movieId: id
     }
 
-    axios.patch(
-      `/api/movies/${id}`, patchRequest
+    axios.post(
+      `/api/rankings/`, postRequest, config
     )
       .then(res => {
+        console.log(config)
+        console.log(postRequest)
         if (userMovies.some(movie => movie.id === res.data.id)) {
 
           let updated = userMovies.map((movie) => {
