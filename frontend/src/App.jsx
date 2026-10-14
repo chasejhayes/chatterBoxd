@@ -31,18 +31,22 @@ const useMovies = () => {
 
 let token = null
 
-const setToken = newToken => {
+function setToken(newToken) {
   token = `Bearer ${newToken}`
 }
 
-const Login = ({setShowLogin, username, setUsername, password, setPassword}) => {
-  const [user, setUser] = useState(null)
-  
+const Login = ({setShowLogin, username, setUsername, password, setPassword, user, setUser}) => {
+
 
   const handleLogin = async event => {
     event.preventDefault()
     try {
       const user = await loginService.login({ username, password })
+
+      window.localStorage.setItem(
+        'loggedMediaUser', JSON.stringify(user)
+      )
+
       setToken(user.token)
       setUser(user)
       setUsername('')
@@ -50,7 +54,7 @@ const Login = ({setShowLogin, username, setUsername, password, setPassword}) => 
     } catch {
       console.log('error: wrong credentials')
     }
-    if(username){setShowLogin(false)}
+    if(user){setShowLogin(false)}
     console.log('logging in with', username, password)
   }
   return (
@@ -86,19 +90,28 @@ const Login = ({setShowLogin, username, setUsername, password, setPassword}) => 
   )
 }
 
-const Home = () => {
+const Home = ({user, setUser}) => {
   const [showLogin, setShowLogin] = useState(true)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  console.log(showLogin)
-  console.log(username)
+  
+  
 
+  // make showLogin conditional on where username has a value
 
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem('loggedMediaUser')
+    if(loggedUserJSON){
+      const user = JSON.parse(loggedUserJSON)
+      setUser(user)
+      setToken(user.token)
+    }
+  }, [])
 
   return (
     <div id="body" className="homePage">
       <h1>Welcome to ChatterBOXD</h1>
-      {showLogin && <Login showLogin={showLogin} setShowLogin={setShowLogin} username={username} setUsername={setUsername} password={password} setPassword={setPassword} />}
+      {showLogin && <Login showLogin={showLogin} setShowLogin={setShowLogin} username={username} setUsername={setUsername} password={password} setPassword={setPassword} user={user} setUser={setUser}/>}
 
       <div>
         <Link to="/aboutme">About Me</Link>
@@ -174,7 +187,7 @@ const UsersPage = () => {
   )
 }
 
-const UserProfile = ({ movies }) => {
+const UserProfile = ({ movies, user, setUser }) => {
 
 
   const [userMovies, setUserMovies] = useState([])
@@ -188,10 +201,30 @@ const UserProfile = ({ movies }) => {
   const [searchArr, setSearchArr] = useState([])
   const [toggleSearch, setToggleSearch] = useState(false)
 
+    useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem('loggedMediaUser')
+    if(loggedUserJSON){
+      const user = JSON.parse(loggedUserJSON)
+      setUser(user)
+      setToken(user.token)
+    }
+  }, [])
+
+  // get only logged in user movies
+  // i can access the 'user' here because a single post is getting sent to the user
+  // trying to GET movies but only with the owner's rankings or should i be getting the rankings 
+  // try getting by ranking and populating the movie section with its specifics
 
   useEffect(() => {
-    axios.get('/api/movies')
+      const config = {
+      headers: { Authorization: token }
+    }
+    console.log(token)
+
+    axios.get('/api/rankings', config)
       .then((res) => {
+        console.log(res)
+        console.log(token)
         let userMov = []
         for (res of res.data) {
           if (res.rating && res.review) {
@@ -213,6 +246,7 @@ const UserProfile = ({ movies }) => {
     const config = {
       headers: { Authorization: token }
     }
+    console.log(config)
 
     let postRequest =
     {
@@ -456,7 +490,6 @@ const Add_Films = ({ movies, showForm, setShowForm, onSubmit, newRating, setNewR
     }
   }
   const handleSetId = (e) => {
-    // let id = Number(e.target.value)
     let id = e.target.value
     setCurrentId(id)
     handleShowForm(id)
@@ -481,8 +514,16 @@ const Add_Films = ({ movies, showForm, setShowForm, onSubmit, newRating, setNewR
 
 function App() {
   const { movies, setMovies } = useMovies();
+  const [user, setUser] = useState(null)
 
-
+  const handleLogout = () => {
+    if (user){
+      console.log(`user logged out`)
+      return window.localStorage.clear()
+    }
+    return console.log("no user logged in currently")
+    
+  }
 
   return (
     <Router>
@@ -492,16 +533,17 @@ function App() {
         <Link to="/profile">profile</Link>
         <Link to="/users">users</Link>
         <Link to="/movies">movies</Link>
+        <button onClick={handleLogout}>logout</button>
       </div>
 
       <Routes>
         <Route path="/movies/:id" element={
           <Movies movies={movies} setMovie={setMovies} />
         } />
-        <Route path="/" element={<Home />}>
+        <Route path="/" element={<Home user={user} setUser={setUser} />}>
           <Route path="/aboutme" element={<AboutMe />} />
         </Route>
-        <Route path="/profile" element={<UserProfile movies={movies} setMovies={setMovies} />} />
+        <Route path="/profile" element={<UserProfile movies={movies} setMovies={setMovies} setUser={setUser} user={user} />} />
         <Route path="/movies" element={<MoviesPage movies={movies} setMovies={setMovies} />} />
         <Route path="/users" element={<UsersPage />} />
         <Route path="*" element={<NotFound />} />
