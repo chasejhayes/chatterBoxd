@@ -25,21 +25,19 @@ const useMovies = () => {
 
   }, [])
 
-  return { movies, setMovies}
+  return { movies, setMovies }
 
 }
 
-  let token = null
+let token = null
 
-  const setToken = newToken => {
-    token = `Bearer ${newToken}`
-  }
+const setToken = newToken => {
+  token = `Bearer ${newToken}`
+}
 
-
-const Home = () => {
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
+const Login = ({setShowLogin, username, setUsername, password, setPassword}) => {
   const [user, setUser] = useState(null)
+  
 
   const handleLogin = async event => {
     event.preventDefault()
@@ -52,20 +50,20 @@ const Home = () => {
     } catch {
       console.log('error: wrong credentials')
     }
+    if(username){setShowLogin(false)}
     console.log('logging in with', username, password)
   }
   return (
-    <div id="body" className="homePage">
-      <h1>Welcome to ChatterBOXD</h1>
+    <div>
       <h2>Login</h2>
       <form onSubmit={handleLogin}>
         <div>
           <label>
             username
             <input
-            type="text"
-            value={username}
-            onChange={({ target }) => setUsername(target.value)} 
+              type="text"
+              value={username}
+              onChange={({ target }) => setUsername(target.value)}
             />
           </label>
         </div>
@@ -73,16 +71,34 @@ const Home = () => {
           <label>
             password
             <input
-            type="password"
-            value={password}
-            onChange={({ target }) => setPassword(target.value)}
+              type="password"
+              value={password}
+              onChange={({ target }) => setPassword(target.value)}
             />
           </label>
         </div>
         <button type="submit">login</button>
 
       </form>
+    </div>
 
+
+  )
+}
+
+const Home = () => {
+  const [showLogin, setShowLogin] = useState(true)
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+  console.log(showLogin)
+  console.log(username)
+
+
+
+  return (
+    <div id="body" className="homePage">
+      <h1>Welcome to ChatterBOXD</h1>
+      {showLogin && <Login showLogin={showLogin} setShowLogin={setShowLogin} username={username} setUsername={setUsername} password={password} setPassword={setPassword} />}
 
       <div>
         <Link to="/aboutme">About Me</Link>
@@ -98,7 +114,7 @@ const NotFound = () => (
 
 const AboutMe = () => {
   return (
-  <div>Testing nested routes</div>
+    <div>Testing nested routes</div>
   )
 }
 
@@ -123,7 +139,7 @@ const Movies = ({ movies }) => {
   const id = useParams().id
   const item = movies.find(n => n.id === id)
 
-  if(!item){
+  if (!item) {
     return <div>Loading...</div>
   }
   console.log(item)
@@ -137,11 +153,11 @@ const Movies = ({ movies }) => {
         <p>{item.description}</p>
         <h4>Reviews</h4>
         <ul>
-          {item.rankings.map((ranking) => 
-          <li>
-            <p>{ranking.rating}</p>
-            <p>{ranking.review}</p>
-          </li>)}
+          {item.rankings.map((ranking) =>
+            <li>
+              <p>{ranking.rating}</p>
+              <p>{ranking.review}</p>
+            </li>)}
         </ul>
       </ul>
     </div>
@@ -480,7 +496,7 @@ function App() {
 
       <Routes>
         <Route path="/movies/:id" element={
-          <Movies movies={movies} setMovie={setMovies}/>
+          <Movies movies={movies} setMovie={setMovies} />
         } />
         <Route path="/" element={<Home />}>
           <Route path="/aboutme" element={<AboutMe />} />
