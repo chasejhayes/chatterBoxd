@@ -219,12 +219,8 @@ const UserProfile = ({ movies, user, setUser }) => {
       const config = {
       headers: { Authorization: token }
     }
-    console.log(token)
-
     axios.get('/api/rankings', config)
       .then((res) => {
-        console.log(res)
-        console.log(token)
         let userMov = []
         for (res of res.data) {
           if (res.rating && res.review) {
@@ -246,6 +242,7 @@ const UserProfile = ({ movies, user, setUser }) => {
     const config = {
       headers: { Authorization: token }
     }
+    console.log(token)
     console.log(config)
 
     let postRequest =
