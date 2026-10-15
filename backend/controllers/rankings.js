@@ -14,7 +14,7 @@ const getTokenFrom = req => {
 }
 
 rankingRouter.get('/', async (req, res) => {
-    const rankings = await Ranking.find({})
+    const rankings = await Ranking.find({}).populate('movieId', {title: 1, director: 1, description: 1})
     res.json(rankings)
 })
 

@@ -35,7 +35,7 @@ function setToken(newToken) {
   token = `Bearer ${newToken}`
 }
 
-const Login = ({setShowLogin, username, setUsername, password, setPassword, user, setUser}) => {
+const Login = ({ setShowLogin, username, setUsername, password, setPassword, user, setUser }) => {
 
 
   const handleLogin = async event => {
@@ -54,7 +54,7 @@ const Login = ({setShowLogin, username, setUsername, password, setPassword, user
     } catch {
       console.log('error: wrong credentials')
     }
-    if(user){setShowLogin(false)}
+    if (user) { setShowLogin(false) }
     console.log('logging in with', username, password)
   }
   return (
@@ -90,21 +90,21 @@ const Login = ({setShowLogin, username, setUsername, password, setPassword, user
   )
 }
 
-const Home = ({user, setUser}) => {
+const Home = ({ user, setUser }) => {
   const [showLogin, setShowLogin] = useState(true)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  
-  
+
+
 
   // make showLogin conditional on where username has a value
 
- 
+
 
   return (
     <div id="body" className="homePage">
       <h1>Welcome to ChatterBOXD</h1>
-      {showLogin && <Login showLogin={showLogin} setShowLogin={setShowLogin} username={username} setUsername={setUsername} password={password} setPassword={setPassword} user={user} setUser={setUser}/>}
+      {showLogin && <Login showLogin={showLogin} setShowLogin={setShowLogin} username={username} setUsername={setUsername} password={password} setPassword={setPassword} user={user} setUser={setUser} />}
 
       <div>
         <Link to="/aboutme">About Me</Link>
@@ -204,14 +204,14 @@ const UserProfile = ({ movies, user, setUser }) => {
 
   console.log(user)
   useEffect(() => {
-  
+
     axios.get('/api/rankings')
       .then((res) => {
-        let userMov = []      
+        let userMov = []
         for (res of res.data) {
-          res.username === user.username 
-          ? userMov.push(res)
-          : res
+          res.username === user.username
+            ? userMov.push(res)
+            : res
         }
         setUserMovies(userMov)
         console.log(userMov)
@@ -231,7 +231,7 @@ const UserProfile = ({ movies, user, setUser }) => {
     const config = {
       headers: { Authorization: token }
     }
- 
+
 
     let postRequest =
     {
@@ -245,7 +245,7 @@ const UserProfile = ({ movies, user, setUser }) => {
       `/api/rankings/`, postRequest, config
     )
       .then(res => {
-    
+
         if (userMovies.some(movie => movie.id === res.data.id)) {
 
           let updated = userMovies.map((movie) => {
@@ -263,7 +263,7 @@ const UserProfile = ({ movies, user, setUser }) => {
     setNewReview("")
     setShowForm(false)
     setCurrentId('')
-  
+
 
   }
 
@@ -280,7 +280,7 @@ const UserProfile = ({ movies, user, setUser }) => {
       <div id="body">
         <Profile_Header />
         <Add_Films movies={movies} setUserMovies={setUserMovies} userMovies={userMovies} showForm={showForm} setShowForm={setShowForm} newRating={newRating} setNewRating={setNewRating} newReview={newReview} setNewReview={setNewReview} onSubmit={addUserRatingAndReview} setCurrentId={setCurrentId} />
-        <Body_Right user={user}userMovies={userMovies} deleteMovies={deleteMovies} setCurrentId={setCurrentId} setUserMovies={setUserMovies} toggleFilter={toggleFilter} setToggleFilter={setToggleFilter} filter={filter} setFilter={setFilter} setShowForm={setShowForm} onSubmit={addUserRatingAndReview} newRating={newRating} newReview={newReview} setNewRating={setNewRating} setNewReview={setNewReview} searchArr={searchArr} setSearchArr={setSearchArr} searchValue={searchValue} setSearchValue={setSearchValue} toggleSearch={toggleSearch} setToggleSearch={setToggleSearch} />
+        <Body_Right user={user} userMovies={userMovies} deleteMovies={deleteMovies} setCurrentId={setCurrentId} setUserMovies={setUserMovies} toggleFilter={toggleFilter} setToggleFilter={setToggleFilter} filter={filter} setFilter={setFilter} setShowForm={setShowForm} onSubmit={addUserRatingAndReview} newRating={newRating} newReview={newReview} setNewRating={setNewRating} setNewReview={setNewReview} searchArr={searchArr} setSearchArr={setSearchArr} searchValue={searchValue} setSearchValue={setSearchValue} toggleSearch={toggleSearch} setToggleSearch={setToggleSearch} />
       </div>
     </div>
   )
@@ -322,12 +322,12 @@ const MovieDisplay = ({ user, userMovies, deleteMovies, toggleFilter, filter, sh
   }
   if (toggleSearch === true) {
     displayType = searchArr
-  
+
   }
 
   console.log(displayType)
-  
- 
+
+
   // Need to display the rankings and they each have a delete button
   // rankings need to hold both userID/rankingID/username
   // the delete request needs to send the userID and the ranking ID
@@ -336,34 +336,21 @@ const MovieDisplay = ({ user, userMovies, deleteMovies, toggleFilter, filter, sh
   // to do: find user prop and send it down to movie display
   return (
     <div>
-      {displayType.map((item) => 
-      <li>
-        <p>{item.rating}</p>
-        <p>{item.review}</p>
-        <p>{item.movieId}</p>
-      </li>)}
-      {/* <ul>
-        {displayType.map((item) =>
-          <li key={item.id}>
-            <h2>{item.title}</h2>
-            <p>Directed By: {item.director}</p>
-            <h3>Description</h3>
-            <p>{item.description}</p>
+      {displayType.map((item) =>
+        <li key={item.id}>
+          {item.movieId.map((movie) =>
+            <div>
+              <div>Title: {movie.title}</div>
+              <div>Description: {movie.description}</div>
+              <div>Director: {movie.director}</div>
+            </div>)}
+          <p>User rating: {item.rating}</p>
+          <p>User review: {item.review}</p>
 
-            {item.rankings.filter((byUser)=> byUser.username === user.username).map((rankings) =>
-              <div>
-                <p>Rating: {rankings.rating}</p>
-                <p>Review: {rankings.review}</p>
-                 <button onClick={() => { handleShowForm(rankings.id) }}>Edit</button>
-                   <button onClick={() => { deleteMovies(rankings.id) }}>Delete</button>
-              </div>
-            )}
-           
-            <Form_Popup showForm={showForm} newRating={newRating} setNewRating={setNewRating} newReview={newReview} setNewReview={setNewReview} onSubmit={onSubmit} />
-            <div></div>
-          </li>
-        )}
-      </ul> */}
+        </li>)}
+
+                    <Form_Popup showForm={showForm} newRating={newRating} setNewRating={setNewRating} newReview={newReview} setNewReview={setNewReview} onSubmit={onSubmit} />
+   
     </div>
   )
 }
@@ -380,7 +367,7 @@ const FilterDropdown = ({ userMovies, setFilter, toggleFilter, setToggleFilter }
     } else if (rating === 0) {
       setToggleFilter(false)
     }
-  
+
     let filtered = userMovies.filter((movie) => Number(movie.rating) === rating)
     console.log(filtered)
     console.log(toggleFilter)
@@ -521,26 +508,26 @@ const Add_Films = ({ movies, showForm, setShowForm, onSubmit, newRating, setNewR
 
 function App() {
   const { movies, setMovies } = useMovies();
-  const [user, setUser] = useState(()=>{
-  const loggedUserJSON = window.localStorage.getItem('loggedMediaUser')
-  return loggedUserJSON ? JSON.parse(loggedUserJSON) : null
+  const [user, setUser] = useState(() => {
+    const loggedUserJSON = window.localStorage.getItem('loggedMediaUser')
+    return loggedUserJSON ? JSON.parse(loggedUserJSON) : null
   })
 
-    useEffect(() => {
+  useEffect(() => {
     if (user) {
       localStorage.setItem('loggedUserJSON', JSON.stringify(user));
     } else {
-      localStorage.removeItem('loggedJSONUser'); 
+      localStorage.removeItem('loggedJSONUser');
     }
   }, [user]);
 
   const handleLogout = () => {
-    if (user){
+    if (user) {
       console.log(`user logged out`)
       return window.localStorage.clear()
     }
     return console.log("no user logged in currently")
-    
+
   }
 
   return (

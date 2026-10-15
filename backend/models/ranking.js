@@ -3,7 +3,11 @@ const mongoose = require('mongoose')
 const rankingSchema = new mongoose.Schema({
     rating: Number,
     review: String,
-    movieId: String,
+    movieId:[
+        {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: 'Movie'
+                }],
     userId: String,
     username: String,
 })
