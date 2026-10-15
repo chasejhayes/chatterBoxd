@@ -346,11 +346,13 @@ const MovieDisplay = ({ user, userMovies, deleteMovies, toggleFilter, filter, sh
             </div>)}
           <p>User rating: {item.rating}</p>
           <p>User review: {item.review}</p>
+          {/* <button onClick={() => { handleShowForm(rankings.id) }}>Edit</button>
+          <button onClick={() => { deleteMovies(rankings.id) }}>Delete</button> */}
 
         </li>)}
 
-                    <Form_Popup showForm={showForm} newRating={newRating} setNewRating={setNewRating} newReview={newReview} setNewReview={setNewReview} onSubmit={onSubmit} />
-   
+      <Form_Popup showForm={showForm} newRating={newRating} setNewRating={setNewRating} newReview={newReview} setNewReview={setNewReview} onSubmit={onSubmit} />
+
     </div>
   )
 }
