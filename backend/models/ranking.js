@@ -4,7 +4,8 @@ const rankingSchema = new mongoose.Schema({
     rating: Number,
     review: String,
     movieId: String,
-    userId: String
+    userId: String,
+    username: String,
 })
 
 rankingSchema.set('toJSON', {

@@ -99,14 +99,7 @@ const Home = ({user, setUser}) => {
 
   // make showLogin conditional on where username has a value
 
-  useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedMediaUser')
-    if(loggedUserJSON){
-      const user = JSON.parse(loggedUserJSON)
-      setUser(user)
-      setToken(user.token)
-    }
-  }, [])
+ 
 
   return (
     <div id="body" className="homePage">
@@ -201,63 +194,58 @@ const UserProfile = ({ movies, user, setUser }) => {
   const [searchArr, setSearchArr] = useState([])
   const [toggleSearch, setToggleSearch] = useState(false)
 
-    useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedMediaUser')
-    if(loggedUserJSON){
-      const user = JSON.parse(loggedUserJSON)
-      setUser(user)
-      setToken(user.token)
-    }
-  }, [])
-
   // get only logged in user movies
   // i can access the 'user' here because a single post is getting sent to the user
   // trying to GET movies but only with the owner's rankings or should i be getting the rankings 
   // try getting by ranking and populating the movie section with its specifics
 
+  // why is user not staying?? keeps going null
+
+
+  console.log(user)
   useEffect(() => {
-      const config = {
-      headers: { Authorization: token }
-    }
-    axios.get('/api/rankings', config)
+  
+    axios.get('/api/rankings')
       .then((res) => {
-        let userMov = []
+        let userMov = []      
         for (res of res.data) {
-          if (res.rating && res.review) {
-            userMov.push(res)
-          }
+          res.username === user.username 
+          ? userMov.push(res)
+          : res
         }
         setUserMovies(userMov)
+        console.log(userMov)
 
       })
   }, [])
+
+  // useMovies()
 
 
 
   function addUserRatingAndReview(e) {
     e.preventDefault()
     let id = currentId;
-    console.log
+
 
     const config = {
       headers: { Authorization: token }
     }
-    console.log(token)
-    console.log(config)
+ 
 
     let postRequest =
     {
       rating: newRating,
       review: newReview,
-      movieId: id
+      movieId: id,
+      username: user.username
     }
 
     axios.post(
       `/api/rankings/`, postRequest, config
     )
       .then(res => {
-        console.log(config)
-        console.log(postRequest)
+    
         if (userMovies.some(movie => movie.id === res.data.id)) {
 
           let updated = userMovies.map((movie) => {
@@ -275,12 +263,12 @@ const UserProfile = ({ movies, user, setUser }) => {
     setNewReview("")
     setShowForm(false)
     setCurrentId('')
-    console.log(userMovies)
+  
 
   }
 
   function deleteMovies(id) {
-    axios.delete(`/api/movies/${id}`)
+    axios.delete(`/api/rankings/${id}`)
       .then(() => {
         setUserMovies(userMovies.filter(item => item.id !== id))
       })
@@ -292,7 +280,7 @@ const UserProfile = ({ movies, user, setUser }) => {
       <div id="body">
         <Profile_Header />
         <Add_Films movies={movies} setUserMovies={setUserMovies} userMovies={userMovies} showForm={showForm} setShowForm={setShowForm} newRating={newRating} setNewRating={setNewRating} newReview={newReview} setNewReview={setNewReview} onSubmit={addUserRatingAndReview} setCurrentId={setCurrentId} />
-        <Body_Right userMovies={userMovies} deleteMovies={deleteMovies} setCurrentId={setCurrentId} setUserMovies={setUserMovies} toggleFilter={toggleFilter} setToggleFilter={setToggleFilter} filter={filter} setFilter={setFilter} setShowForm={setShowForm} onSubmit={addUserRatingAndReview} newRating={newRating} newReview={newReview} setNewRating={setNewRating} setNewReview={setNewReview} searchArr={searchArr} setSearchArr={setSearchArr} searchValue={searchValue} setSearchValue={setSearchValue} toggleSearch={toggleSearch} setToggleSearch={setToggleSearch} />
+        <Body_Right user={user}userMovies={userMovies} deleteMovies={deleteMovies} setCurrentId={setCurrentId} setUserMovies={setUserMovies} toggleFilter={toggleFilter} setToggleFilter={setToggleFilter} filter={filter} setFilter={setFilter} setShowForm={setShowForm} onSubmit={addUserRatingAndReview} newRating={newRating} newReview={newReview} setNewRating={setNewRating} setNewReview={setNewReview} searchArr={searchArr} setSearchArr={setSearchArr} searchValue={searchValue} setSearchValue={setSearchValue} toggleSearch={toggleSearch} setToggleSearch={setToggleSearch} />
       </div>
     </div>
   )
@@ -315,9 +303,11 @@ const Profile_Header = () => (
 
 
 
-const MovieDisplay = ({ userMovies, deleteMovies, toggleFilter, filter, showForm, setShowForm, onSubmit, newRating, setNewRating, newReview, setNewReview, setCurrentId, toggleSearch, searchArr }) => {
+const MovieDisplay = ({ user, userMovies, deleteMovies, toggleFilter, filter, showForm, setShowForm, onSubmit, newRating, setNewRating, newReview, setNewReview, setCurrentId, toggleSearch, searchArr }) => {
 
   let displayType = userMovies
+
+
 
   function handleShowForm(id) {
     setCurrentId(id)
@@ -328,32 +318,52 @@ const MovieDisplay = ({ userMovies, deleteMovies, toggleFilter, filter, showForm
 
   if (toggleFilter === true) {
     displayType = filter
-    console.log(filter)
-    console.log(displayType)
+
   }
   if (toggleSearch === true) {
     displayType = searchArr
-    console.log(displayType)
+  
   }
 
+  console.log(displayType)
+  
+ 
+  // Need to display the rankings and they each have a delete button
+  // rankings need to hold both userID/rankingID/username
+  // the delete request needs to send the userID and the ranking ID
+
+  // filter the displayed rankings by current user
+  // to do: find user prop and send it down to movie display
   return (
     <div>
-      <ul>
+      {displayType.map((item) => 
+      <li>
+        <p>{item.rating}</p>
+        <p>{item.review}</p>
+        <p>{item.movieId}</p>
+      </li>)}
+      {/* <ul>
         {displayType.map((item) =>
           <li key={item.id}>
-            <h2>{item.title} {item.rating}</h2>
+            <h2>{item.title}</h2>
             <p>Directed By: {item.director}</p>
             <h3>Description</h3>
             <p>{item.description}</p>
-            <p>Average Rating: {item.averageRating}</p>
-            <p>Reviews: {item.reviews}</p>
-            <p>{item.review}{item.rating}</p>
-            <button onClick={() => { handleShowForm(item.id) }}>Edit</button>
+
+            {item.rankings.filter((byUser)=> byUser.username === user.username).map((rankings) =>
+              <div>
+                <p>Rating: {rankings.rating}</p>
+                <p>Review: {rankings.review}</p>
+                 <button onClick={() => { handleShowForm(rankings.id) }}>Edit</button>
+                   <button onClick={() => { deleteMovies(rankings.id) }}>Delete</button>
+              </div>
+            )}
+           
             <Form_Popup showForm={showForm} newRating={newRating} setNewRating={setNewRating} newReview={newReview} setNewReview={setNewReview} onSubmit={onSubmit} />
-            <button onClick={() => { deleteMovies(item.id) }}>Delete</button>
+            <div></div>
           </li>
         )}
-      </ul>
+      </ul> */}
     </div>
   )
 }
@@ -370,7 +380,7 @@ const FilterDropdown = ({ userMovies, setFilter, toggleFilter, setToggleFilter }
     } else if (rating === 0) {
       setToggleFilter(false)
     }
-    console.log(userMovies)
+  
     let filtered = userMovies.filter((movie) => Number(movie.rating) === rating)
     console.log(filtered)
     console.log(toggleFilter)
@@ -440,7 +450,7 @@ const SearchBar = ({ userMovies, searchArr, setSearchArr, searchValue, setSearch
 }
 
 
-const Body_Right = ({ userMovies, deleteMovies, setCurrentId, setUserMovies, toggleFilter, setToggleFilter, filter, setFilter, setShowForm, onSubmit, newRating, newReview, setNewRating, setNewReview, searchArr, setSearchArr, searchValue, setSearchValue, toggleSearch, setToggleSearch }) => (
+const Body_Right = ({ user, userMovies, deleteMovies, setCurrentId, setUserMovies, toggleFilter, setToggleFilter, filter, setFilter, setShowForm, onSubmit, newRating, newReview, setNewRating, setNewReview, searchArr, setSearchArr, searchValue, setSearchValue, toggleSearch, setToggleSearch }) => (
   <div id="body_right">
     <div id="films_header">My Films</div>
     <div id="films_UI">
@@ -449,7 +459,7 @@ const Body_Right = ({ userMovies, deleteMovies, setCurrentId, setUserMovies, tog
       <FilterDropdown userMovies={userMovies} setUserMovies={setUserMovies} toggleFilter={toggleFilter} setToggleFilter={setToggleFilter} filter={filter} setFilter={setFilter} />
     </div>
     <SearchBar userMovies={userMovies} searchArr={searchArr} setSearchArr={setSearchArr} searchValue={searchValue} setSearchValue={setSearchValue} toggleSearch={toggleSearch} setToggleSearch={setToggleSearch} />
-    <MovieDisplay userMovies={userMovies} deleteMovies={deleteMovies} setCurrentId={setCurrentId} toggleFilter={toggleFilter} setToggleFilter={setToggleFilter} filter={filter} setFilter={setFilter} setShowForm={setShowForm} onSubmit={onSubmit} newRating={newRating} newReview={newReview} setNewRating={setNewRating} setNewReview={setNewReview} setCurrentId={setCurrentId} toggleSearch={toggleSearch} searchArr={searchArr} />
+    <MovieDisplay user={user} userMovies={userMovies} deleteMovies={deleteMovies} setCurrentId={setCurrentId} toggleFilter={toggleFilter} setToggleFilter={setToggleFilter} filter={filter} setFilter={setFilter} setShowForm={setShowForm} onSubmit={onSubmit} newRating={newRating} newReview={newReview} setNewRating={setNewRating} setNewReview={setNewReview} setCurrentId={setCurrentId} toggleSearch={toggleSearch} searchArr={searchArr} />
   </div>
 )
 
@@ -511,7 +521,18 @@ const Add_Films = ({ movies, showForm, setShowForm, onSubmit, newRating, setNewR
 
 function App() {
   const { movies, setMovies } = useMovies();
-  const [user, setUser] = useState(null)
+  const [user, setUser] = useState(()=>{
+  const loggedUserJSON = window.localStorage.getItem('loggedMediaUser')
+  return loggedUserJSON ? JSON.parse(loggedUserJSON) : null
+  })
+
+    useEffect(() => {
+    if (user) {
+      localStorage.setItem('loggedUserJSON', JSON.stringify(user));
+    } else {
+      localStorage.removeItem('loggedJSONUser'); 
+    }
+  }, [user]);
 
   const handleLogout = () => {
     if (user){

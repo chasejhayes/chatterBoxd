@@ -41,7 +41,8 @@ rankingRouter.post('/', async (req, res) => {
         rating: body.rating,
         review: body.review,
         movieId: body.movieId,
-        userId: body.userId
+        userId: body.userId,
+        username: body.username
     })
 
     await Movie.findByIdAndUpdate(req.body.movieId,
