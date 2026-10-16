@@ -519,7 +519,7 @@ function App() {
     return loggedUserJSON ? JSON.parse(loggedUserJSON) : null
   })
   const [token, setToken] = useState(() => {
-    (user) ? `Bearer ${user.token}` : null})
+    return (user) ? `Bearer ${user.token}` : null})
 
   useEffect(() => {
     if (user) {
