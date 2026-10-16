@@ -29,14 +29,22 @@ const useMovies = () => {
 
 }
 
-let token = null
+// let token = null
 
-function setToken(newToken) {
-  token = `Bearer ${newToken}`
-}
+// User is getting drilled from App, to Home, to Login
+// user/setUser either gets from local storage whoever is logged in currently OR returns null
+// on login
 
-const Login = ({ setShowLogin, username, setUsername, password, setPassword, user, setUser }) => {
+// the problem: the token is not being sent with the request
+// the token must be assigned based off the user
+// the token must be passed to the routes
 
+
+const Login = ({ setShowLogin, username, setUsername, password, setPassword, user, setUser, getToken}) => {
+
+//   function setToken(newToken) {
+//   let token = `Bearer ${newToken}`
+// }
 
   const handleLogin = async event => {
     event.preventDefault()
@@ -47,7 +55,7 @@ const Login = ({ setShowLogin, username, setUsername, password, setPassword, use
         'loggedMediaUser', JSON.stringify(user)
       )
 
-      setToken(user.token)
+      getToken(user.token)
       setUser(user)
       setUsername('')
       setPassword('')
@@ -90,7 +98,7 @@ const Login = ({ setShowLogin, username, setUsername, password, setPassword, use
   )
 }
 
-const Home = ({ user, setUser }) => {
+const Home = ({ user, setUser, getToken}) => {
   const [showLogin, setShowLogin] = useState(true)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -104,7 +112,7 @@ const Home = ({ user, setUser }) => {
   return (
     <div id="body" className="homePage">
       <h1>Welcome to ChatterBOXD</h1>
-      {showLogin && <Login showLogin={showLogin} setShowLogin={setShowLogin} username={username} setUsername={setUsername} password={password} setPassword={setPassword} user={user} setUser={setUser} />}
+      {showLogin && <Login showLogin={showLogin} setShowLogin={setShowLogin} username={username} setUsername={setUsername} password={password} setPassword={setPassword} user={user} setUser={setUser} getToken={getToken}/>}
 
       <div>
         <Link to="/aboutme">About Me</Link>
@@ -160,7 +168,7 @@ const Movies = ({ movies }) => {
         <h4>Reviews</h4>
         <ul>
           {item.rankings.map((ranking) =>
-            <li>
+            <li key={ranking.id}>
               <p>{ranking.rating}</p>
               <p>{ranking.review}</p>
             </li>)}
@@ -180,7 +188,7 @@ const UsersPage = () => {
   )
 }
 
-const UserProfile = ({ movies, user, setUser }) => {
+const UserProfile = ({ movies, user, setUser, token}) => {
 
 
   const [userMovies, setUserMovies] = useState([])
@@ -194,15 +202,6 @@ const UserProfile = ({ movies, user, setUser }) => {
   const [searchArr, setSearchArr] = useState([])
   const [toggleSearch, setToggleSearch] = useState(false)
 
-  // get only logged in user movies
-  // i can access the 'user' here because a single post is getting sent to the user
-  // trying to GET movies but only with the owner's rankings or should i be getting the rankings 
-  // try getting by ranking and populating the movie section with its specifics
-
-  // why is user not staying?? keeps going null
-
-
-  console.log(user)
   useEffect(() => {
 
     axios.get('/api/rankings')
@@ -214,18 +213,20 @@ const UserProfile = ({ movies, user, setUser }) => {
             : res
         }
         setUserMovies(userMov)
-        console.log(userMov)
 
       })
   }, [])
 
-  // useMovies()
 
 
 
   function addUserRatingAndReview(e) {
     e.preventDefault()
     let id = currentId;
+    console.log(token)
+    // console.log(user.token)
+
+    // let token = `Bearer: ${user.token}`
 
 
     const config = {
@@ -245,6 +246,7 @@ const UserProfile = ({ movies, user, setUser }) => {
       `/api/rankings/`, postRequest, config
     )
       .then(res => {
+        console.log(user)
 
         if (userMovies.some(movie => movie.id === res.data.id)) {
 
@@ -325,21 +327,17 @@ const MovieDisplay = ({ user, userMovies, deleteMovies, toggleFilter, filter, sh
 
   }
 
-  console.log(displayType)
-
 
   // Need to display the rankings and they each have a delete button
   // rankings need to hold both userID/rankingID/username
   // the delete request needs to send the userID and the ranking ID
 
-  // filter the displayed rankings by current user
-  // to do: find user prop and send it down to movie display
   return (
     <div>
       {displayType.map((item) =>
         <li key={item.id}>
           {item.movieId.map((movie) =>
-            <div>
+            <div key={movie.id}>
               <div>Title: {movie.title}</div>
               <div>Description: {movie.description}</div>
               <div>Director: {movie.director}</div>
@@ -439,8 +437,14 @@ const SearchBar = ({ userMovies, searchArr, setSearchArr, searchValue, setSearch
 }
 
 
-const Body_Right = ({ user, userMovies, deleteMovies, setCurrentId, setUserMovies, toggleFilter, setToggleFilter, filter, setFilter, setShowForm, onSubmit, newRating, newReview, setNewRating, setNewReview, searchArr, setSearchArr, searchValue, setSearchValue, toggleSearch, setToggleSearch }) => (
+const Body_Right = ({ user, userMovies, deleteMovies, setCurrentId, setUserMovies, toggleFilter, setToggleFilter, filter, setFilter, setShowForm, onSubmit, newRating, newReview, setNewRating, setNewReview, searchArr, setSearchArr, searchValue, setSearchValue, toggleSearch, setToggleSearch }) => {
+    
+  function showUsername(){
+   if (user) return user.username 
+  }
+  return (
   <div id="body_right">
+    <div>{showUsername()}</div>
     <div id="films_header">My Films</div>
     <div id="films_UI">
       <button>Add Films</button>
@@ -450,7 +454,7 @@ const Body_Right = ({ user, userMovies, deleteMovies, setCurrentId, setUserMovie
     <SearchBar userMovies={userMovies} searchArr={searchArr} setSearchArr={setSearchArr} searchValue={searchValue} setSearchValue={setSearchValue} toggleSearch={toggleSearch} setToggleSearch={setToggleSearch} />
     <MovieDisplay user={user} userMovies={userMovies} deleteMovies={deleteMovies} setCurrentId={setCurrentId} toggleFilter={toggleFilter} setToggleFilter={setToggleFilter} filter={filter} setFilter={setFilter} setShowForm={setShowForm} onSubmit={onSubmit} newRating={newRating} newReview={newReview} setNewRating={setNewRating} setNewReview={setNewReview} setCurrentId={setCurrentId} toggleSearch={toggleSearch} searchArr={searchArr} />
   </div>
-)
+)}
 
 const Form_Popup = ({ showForm, onSubmit, newRating, setNewRating, newReview, setNewReview }) => {
   if (showForm === true)
@@ -514,14 +518,21 @@ function App() {
     const loggedUserJSON = window.localStorage.getItem('loggedMediaUser')
     return loggedUserJSON ? JSON.parse(loggedUserJSON) : null
   })
+  const [token, setToken] = useState(() => {
+    (user) ? `Bearer ${user.token}` : null})
 
   useEffect(() => {
     if (user) {
-      localStorage.setItem('loggedUserJSON', JSON.stringify(user));
+      localStorage.setItem('loggedUserJSON', JSON.stringify(user))
     } else {
       localStorage.removeItem('loggedJSONUser');
     }
   }, [user]);
+
+  function getToken(newToken) {
+  setToken(`Bearer ${newToken}`)
+  console.log(token)
+}
 
   const handleLogout = () => {
     if (user) {
@@ -547,10 +558,10 @@ function App() {
         <Route path="/movies/:id" element={
           <Movies movies={movies} setMovie={setMovies} />
         } />
-        <Route path="/" element={<Home user={user} setUser={setUser} />}>
+        <Route path="/" element={<Home user={user} setUser={setUser} getToken={getToken} />}>
           <Route path="/aboutme" element={<AboutMe />} />
         </Route>
-        <Route path="/profile" element={<UserProfile movies={movies} setMovies={setMovies} setUser={setUser} user={user} />} />
+        <Route path="/profile" element={<UserProfile movies={movies} setMovies={setMovies} setUser={setUser} user={user} token={token}/>} />
         <Route path="/movies" element={<MoviesPage movies={movies} setMovies={setMovies} />} />
         <Route path="/users" element={<UsersPage />} />
         <Route path="*" element={<NotFound />} />

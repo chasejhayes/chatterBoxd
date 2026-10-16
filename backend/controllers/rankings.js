@@ -35,6 +35,8 @@ rankingRouter.post('/', async (req, res) => {
     if(!decodedToken.id){
         return res.status(401).json({ error: 'token invalid' })
     }
+
+    // so GET is populating
     
 
     const ranking = new Ranking({
@@ -52,7 +54,9 @@ rankingRouter.post('/', async (req, res) => {
         { $push: { rankings: ranking.id } }
     )
     const newRanking = await ranking.save()
-    res.json(newRanking)
+
+    const populatedRanking = await newRanking.populate('movieId', {title: 1, director: 1, description: 1})
+    res.json(populatedRanking)
 })
 
 rankingRouter.delete('/:id', async (req, res) => {
