@@ -7,83 +7,64 @@ import { useParams } from 'react-router-dom'
 import { Outlet } from 'react-router-dom'
 import { useEffect, useState } from "react"
 import './style.css'
-import loginService from './services/login'
+import Login from "./components/Login"
 import useMovies from "./hooks/useMovies"
 
 
-// const useMovies = () => {
 
-//   const [movies, setMovies] = useState([]);
+// const Login = ({ setShowLogin, username, setUsername, password, setPassword, user, setUser, getToken}) => {
 
-//   useEffect(() => {
-//     axios.get('/api/movies')
-//       .then((response) => {
-//         setMovies(response.data)
-//       })
-//       .catch((error) => {
-//         console.log(error)
-//       })
+//   const handleLogin = async event => {
+//     event.preventDefault()
+//     try {
+//       const user = await loginService.login({ username, password })
 
-//   }, [])
+//       window.localStorage.setItem(
+//         'loggedMediaUser', JSON.stringify(user)
+//       )
 
-//   return { movies, setMovies }
+//       getToken(user.token)
+//       setUser(user)
+//       setUsername('')
+//       setPassword('')
+//     } catch {
+//       console.log('error: wrong credentials')
+//     }
+//     if (user) { setShowLogin(false) }
+//     console.log('logging in with', username, password)
+//   }
+//   return (
+//     <div>
+//       <h2>Login</h2>
+//       <form onSubmit={handleLogin}>
+//         <div>
+//           <label>
+//             username
+//             <input
+//               type="text"
+//               value={username}
+//               onChange={({ target }) => setUsername(target.value)}
+//             />
+//           </label>
+//         </div>
+//         <div>
+//           <label>
+//             password
+//             <input
+//               type="password"
+//               value={password}
+//               onChange={({ target }) => setPassword(target.value)}
+//             />
+//           </label>
+//         </div>
+//         <button type="submit">login</button>
 
+//       </form>
+//     </div>
+
+
+//   )
 // }
-
-
-const Login = ({ setShowLogin, username, setUsername, password, setPassword, user, setUser, getToken}) => {
-
-  const handleLogin = async event => {
-    event.preventDefault()
-    try {
-      const user = await loginService.login({ username, password })
-
-      window.localStorage.setItem(
-        'loggedMediaUser', JSON.stringify(user)
-      )
-
-      getToken(user.token)
-      setUser(user)
-      setUsername('')
-      setPassword('')
-    } catch {
-      console.log('error: wrong credentials')
-    }
-    if (user) { setShowLogin(false) }
-    console.log('logging in with', username, password)
-  }
-  return (
-    <div>
-      <h2>Login</h2>
-      <form onSubmit={handleLogin}>
-        <div>
-          <label>
-            username
-            <input
-              type="text"
-              value={username}
-              onChange={({ target }) => setUsername(target.value)}
-            />
-          </label>
-        </div>
-        <div>
-          <label>
-            password
-            <input
-              type="password"
-              value={password}
-              onChange={({ target }) => setPassword(target.value)}
-            />
-          </label>
-        </div>
-        <button type="submit">login</button>
-
-      </form>
-    </div>
-
-
-  )
-}
 
 const Home = ({ user, setUser, getToken}) => {
   const [showLogin, setShowLogin] = useState(true)
