@@ -232,6 +232,7 @@ const UserProfile = ({ movies, user, setUser, token}) => {
     const config = {
       headers: { Authorization: token }
     }
+    console.log(user)
 
 
     let postRequest =
@@ -239,7 +240,8 @@ const UserProfile = ({ movies, user, setUser, token}) => {
       rating: newRating,
       review: newReview,
       movieId: id,
-      username: user.username
+      username: user.username,
+      userId: user.userId
     }
 
     axios.post(
