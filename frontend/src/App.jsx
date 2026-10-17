@@ -8,43 +8,30 @@ import { Outlet } from 'react-router-dom'
 import { useEffect, useState } from "react"
 import './style.css'
 import loginService from './services/login'
+import useMovies from "./hooks/useMovies"
 
 
-const useMovies = () => {
+// const useMovies = () => {
 
-  const [movies, setMovies] = useState([]);
+//   const [movies, setMovies] = useState([]);
 
-  useEffect(() => {
-    axios.get('/api/movies')
-      .then((response) => {
-        setMovies(response.data)
-      })
-      .catch((error) => {
-        console.log(error)
-      })
+//   useEffect(() => {
+//     axios.get('/api/movies')
+//       .then((response) => {
+//         setMovies(response.data)
+//       })
+//       .catch((error) => {
+//         console.log(error)
+//       })
 
-  }, [])
+//   }, [])
 
-  return { movies, setMovies }
+//   return { movies, setMovies }
 
-}
-
-// let token = null
-
-// User is getting drilled from App, to Home, to Login
-// user/setUser either gets from local storage whoever is logged in currently OR returns null
-// on login
-
-// the problem: the token is not being sent with the request
-// the token must be assigned based off the user
-// the token must be passed to the routes
+// }
 
 
 const Login = ({ setShowLogin, username, setUsername, password, setPassword, user, setUser, getToken}) => {
-
-//   function setToken(newToken) {
-//   let token = `Bearer ${newToken}`
-// }
 
   const handleLogin = async event => {
     event.preventDefault()
