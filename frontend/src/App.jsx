@@ -1,4 +1,4 @@
-import axios from "axios"
+
 import {
   BrowserRouter as Router,
   Routes, Route, Link
@@ -18,124 +18,10 @@ import Movies from "./components/Movies"
 // pages
 import MoviesPage from "./pages/MoviesPage"
 import UsersPage from "./pages/UsersPage"
-
-
-const UserProfilePage = ({ movies, user, token}) => {
-
-
-  const [userMovies, setUserMovies] = useState([])
-  const [showForm, setShowForm] = useState(false)
-  const [newRating, setNewRating] = useState("")
-  const [newReview, setNewReview] = useState("")
-  const [currentId, setCurrentId] = useState("")
-  const [toggleFilter, setToggleFilter] = useState(false)
-  const [filter, setFilter] = useState('')
-  const [searchValue, setSearchValue] = useState('')
-  const [searchArr, setSearchArr] = useState([])
-  const [toggleSearch, setToggleSearch] = useState(false)
-
-  useEffect(() => {
-
-    axios.get('/api/rankings')
-      .then((res) => {
-        let userMov = []
-        for (res of res.data) {
-          res.username === user.username
-            ? userMov.push(res)
-            : res
-        }
-        setUserMovies(userMov)
-
-      })
-  }, [])
+import UserProfilePage from './pages/UserProfilePage'
 
 
 
-
-  function addUserRatingAndReview(e) {
-    e.preventDefault()
-    let id = currentId;
-    console.log(token)
-    // console.log(user.token)
-
-    // let token = `Bearer: ${user.token}`
-
-
-    const config = {
-      headers: { Authorization: token }
-    }
-    console.log(user)
-
-
-    let postRequest =
-    {
-      rating: newRating,
-      review: newReview,
-      movieId: id,
-      username: user.username,
-      userId: user.userId
-    }
-
-    axios.post(
-      `/api/rankings/`, postRequest, config
-    )
-      .then(res => {
-        console.log(user)
-
-        if (userMovies.some(movie => movie.id === res.data.id)) {
-
-          let updated = userMovies.map((movie) => {
-            return movie.id == id
-              ? res.data
-              : movie
-          })
-          setUserMovies(updated)
-        } else {
-          setUserMovies([...userMovies, res.data])
-
-        }
-      })
-    setNewRating("")
-    setNewReview("")
-    setShowForm(false)
-    setCurrentId('')
-
-
-  }
-
-  function deleteMovies(id) {
-    axios.delete(`/api/rankings/${id}`)
-      .then(() => {
-        setUserMovies(userMovies.filter(item => item.id !== id))
-      })
-  }
-
-
-  return (
-    <div>
-      <div id="body">
-        <Profile_Header />
-        <Add_Films movies={movies} setUserMovies={setUserMovies} userMovies={userMovies} showForm={showForm} setShowForm={setShowForm} newRating={newRating} setNewRating={setNewRating} newReview={newReview} setNewReview={setNewReview} onSubmit={addUserRatingAndReview} setCurrentId={setCurrentId} />
-        <Body_Right user={user} userMovies={userMovies} deleteMovies={deleteMovies} setCurrentId={setCurrentId} setUserMovies={setUserMovies} toggleFilter={toggleFilter} setToggleFilter={setToggleFilter} filter={filter} setFilter={setFilter} setShowForm={setShowForm} onSubmit={addUserRatingAndReview} newRating={newRating} newReview={newReview} setNewRating={setNewRating} setNewReview={setNewReview} searchArr={searchArr} setSearchArr={setSearchArr} searchValue={searchValue} setSearchValue={setSearchValue} toggleSearch={toggleSearch} setToggleSearch={setToggleSearch} />
-      </div>
-    </div>
-  )
-
-}
-
-
-
-
-
-const Profile_Header = () => (
-  <div id="profile_header">
-    <div id="image">Profile Image Here</div>
-    <div>User Name</div>
-    <div>Total Films: 0</div>
-    <div>Bio HERE</div>
-    <button>Edit Bio</button>
-  </div>
-)
 
 
 
@@ -290,57 +176,39 @@ const Body_Right = ({ user, userMovies, deleteMovies, setCurrentId, setUserMovie
   </div>
 )}
 
-const Form_Popup = ({ showForm, onSubmit, newRating, setNewRating, newReview, setNewReview }) => {
-  if (showForm === true)
-    return (
-      <div>
-        <dialog open>
-          <form method="dialog" id="user_review" onSubmit={onSubmit}>
-            <label>Review:
-              <input value={newReview} onChange={(e) => setNewReview(e.target.value)} />
-            </label>
-            <label>Rating:
-              <input value={newRating} onChange={(e) => setNewRating(e.target.value)} />
-            </label>
-            <button>Submit</button>
-          </form>
-        </dialog>
-      </div>
-
-    )
-}
 
 
 
 
-const Add_Films = ({ movies, showForm, setShowForm, onSubmit, newRating, setNewRating, newReview, setNewReview, setCurrentId, userMovies }) => {
+
+// const Add_Films = ({ movies, showForm, setShowForm, onSubmit, newRating, setNewRating, newReview, setNewReview, setCurrentId, userMovies }) => {
 
 
-  const handleShowForm = (id) => {
-    if (userMovies.some((x) => x.id == id)) {
-      return alert("Film already in list")
-    } else {
-      return setShowForm(true)
-    }
-  }
-  const handleSetId = (e) => {
-    let id = e.target.value
-    setCurrentId(id)
-    handleShowForm(id)
-  }
+//   const handleShowForm = (id) => {
+//     if (userMovies.some((x) => x.id == id)) {
+//       return alert("Film already in list")
+//     } else {
+//       return setShowForm(true)
+//     }
+//   }
+//   const handleSetId = (e) => {
+//     let id = e.target.value
+//     setCurrentId(id)
+//     handleShowForm(id)
+//   }
 
-  return (
-    <div>
-      <select name="movies" id="movies" onChange={(e) => { handleSetId(e) }}>
-        <option value="">Please select a film</option>
-        {movies.map(item =>
-          <option key={item.id} value={item.id}>{item.title}</option>
-        )}
-      </select>
-      <Form_Popup showForm={showForm} newRating={newRating} setNewRating={setNewRating} newReview={newReview} setNewReview={setNewReview} onSubmit={onSubmit} />
-    </div>
-  )
-}
+//   return (
+//     <div>
+//       <select name="movies" id="movies" onChange={(e) => { handleSetId(e) }}>
+//         <option value="">Please select a film</option>
+//         {movies.map(item =>
+//           <option key={item.id} value={item.id}>{item.title}</option>
+//         )}
+//       </select>
+//       <Form_Popup showForm={showForm} newRating={newRating} setNewRating={setNewRating} newReview={newReview} setNewReview={setNewReview} onSubmit={onSubmit} />
+//     </div>
+//   )
+// }
 
 
 
