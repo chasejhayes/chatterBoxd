@@ -1,4 +1,4 @@
-import Login from "./Login"
+import Login from "../components/Login"
 import { Outlet, Link} from 'react-router-dom'
 import { useState } from "react"
 
