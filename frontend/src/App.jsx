@@ -4,91 +4,31 @@ import {
   Routes, Route, Link
 } from 'react-router-dom'
 import { useParams } from 'react-router-dom'
-import { Outlet } from 'react-router-dom'
 import { useEffect, useState } from "react"
 import './style.css'
-import Login from "./components/Login"
+import Home from "./components/Home"
 import useMovies from "./hooks/useMovies"
 
 
 
-// const Login = ({ setShowLogin, username, setUsername, password, setPassword, user, setUser, getToken}) => {
+// const Home = ({ user, setUser, getToken}) => {
+//   const [showLogin, setShowLogin] = useState(true)
+//   const [username, setUsername] = useState('')
+//   const [password, setPassword] = useState('')
 
-//   const handleLogin = async event => {
-//     event.preventDefault()
-//     try {
-//       const user = await loginService.login({ username, password })
 
-//       window.localStorage.setItem(
-//         'loggedMediaUser', JSON.stringify(user)
-//       )
-
-//       getToken(user.token)
-//       setUser(user)
-//       setUsername('')
-//       setPassword('')
-//     } catch {
-//       console.log('error: wrong credentials')
-//     }
-//     if (user) { setShowLogin(false) }
-//     console.log('logging in with', username, password)
-//   }
 //   return (
-//     <div>
-//       <h2>Login</h2>
-//       <form onSubmit={handleLogin}>
-//         <div>
-//           <label>
-//             username
-//             <input
-//               type="text"
-//               value={username}
-//               onChange={({ target }) => setUsername(target.value)}
-//             />
-//           </label>
-//         </div>
-//         <div>
-//           <label>
-//             password
-//             <input
-//               type="password"
-//               value={password}
-//               onChange={({ target }) => setPassword(target.value)}
-//             />
-//           </label>
-//         </div>
-//         <button type="submit">login</button>
+//     <div id="body" className="homePage">
+//       <h1>Welcome to ChatterBOXD</h1>
+//       {showLogin && <Login showLogin={showLogin} setShowLogin={setShowLogin} username={username} setUsername={setUsername} password={password} setPassword={setPassword} user={user} setUser={setUser} getToken={getToken}/>}
 
-//       </form>
+//       <div>
+//         <Link to="/aboutme">About Me</Link>
+//       </div>
+//       <Outlet />
 //     </div>
-
-
 //   )
 // }
-
-const Home = ({ user, setUser, getToken}) => {
-  const [showLogin, setShowLogin] = useState(true)
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-
-
-
-  // make showLogin conditional on where username has a value
-
-
-
-  return (
-    <div id="body" className="homePage">
-      <h1>Welcome to ChatterBOXD</h1>
-      {showLogin && <Login showLogin={showLogin} setShowLogin={setShowLogin} username={username} setUsername={setUsername} password={password} setPassword={setPassword} user={user} setUser={setUser} getToken={getToken}/>}
-
-      <div>
-        <Link to="/aboutme">About Me</Link>
-      </div>
-      <Outlet />
-    </div>
-  )
-}
 
 const NotFound = () => (
   <div>404</div>
