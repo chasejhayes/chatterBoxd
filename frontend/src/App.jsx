@@ -3,100 +3,24 @@ import {
   BrowserRouter as Router,
   Routes, Route, Link
 } from 'react-router-dom'
-import { useParams } from 'react-router-dom'
 import { useEffect, useState } from "react"
 import './style.css'
-import Home from "./components/Home"
+
+// hooks
 import useMovies from "./hooks/useMovies"
 
+// components
+import Home from "./components/Home"
+import NotFound from "./components/NotFound"
+import AboutMe from "./components/AboutMe"
+import Movies from "./components/Movies"
+
+// pages
+import MoviesPage from "./pages/MoviesPage"
+import UsersPage from "./pages/UsersPage"
 
 
-// const Home = ({ user, setUser, getToken}) => {
-//   const [showLogin, setShowLogin] = useState(true)
-//   const [username, setUsername] = useState('')
-//   const [password, setPassword] = useState('')
-
-
-//   return (
-//     <div id="body" className="homePage">
-//       <h1>Welcome to ChatterBOXD</h1>
-//       {showLogin && <Login showLogin={showLogin} setShowLogin={setShowLogin} username={username} setUsername={setUsername} password={password} setPassword={setPassword} user={user} setUser={setUser} getToken={getToken}/>}
-
-//       <div>
-//         <Link to="/aboutme">About Me</Link>
-//       </div>
-//       <Outlet />
-//     </div>
-//   )
-// }
-
-const NotFound = () => (
-  <div>404</div>
-)
-
-const AboutMe = () => {
-  return (
-    <div>Testing nested routes</div>
-  )
-}
-
-const MoviesPage = ({ movies }) => {
-
-  return (
-    <div id="body">
-      <ul>
-        {movies.map((item) =>
-          <li key={item.id}>
-            <Link to={`/movies/${item.id}`}>{item.title}</Link>
-          </li>
-        )}
-      </ul>
-    </div>
-  )
-}
-
-
-
-const Movies = ({ movies }) => {
-  const id = useParams().id
-  const item = movies.find(n => n.id === id)
-
-  if (!item) {
-    return <div>Loading...</div>
-  }
-  console.log(item)
-
-  return (
-    <div id="body">
-      <ul>
-        <h2>{item.title}</h2>
-        <p>Directed By: {item.director}</p>
-        <h3>Description</h3>
-        <p>{item.description}</p>
-        <h4>Reviews</h4>
-        <ul>
-          {item.rankings.map((ranking) =>
-            <li key={ranking.id}>
-              <p>{ranking.rating}</p>
-              <p>{ranking.review}</p>
-            </li>)}
-        </ul>
-      </ul>
-    </div>
-  )
-}
-
-const UsersPage = () => {
-  return (
-    <div id="body">
-      <p>User 1</p>
-      <p>User 2</p>
-      <p>User 3</p>
-    </div>
-  )
-}
-
-const UserProfile = ({ movies, user, setUser, token}) => {
+const UserProfilePage = ({ movies, user, token}) => {
 
 
   const [userMovies, setUserMovies] = useState([])
@@ -471,7 +395,7 @@ function App() {
         <Route path="/" element={<Home user={user} setUser={setUser} getToken={getToken} />}>
           <Route path="/aboutme" element={<AboutMe />} />
         </Route>
-        <Route path="/profile" element={<UserProfile movies={movies} setMovies={setMovies} setUser={setUser} user={user} token={token}/>} />
+        <Route path="/profile" element={<UserProfilePage movies={movies} setMovies={setMovies} setUser={setUser} user={user} token={token}/>} />
         <Route path="/movies" element={<MoviesPage movies={movies} setMovies={setMovies} />} />
         <Route path="/users" element={<UsersPage />} />
         <Route path="*" element={<NotFound />} />
