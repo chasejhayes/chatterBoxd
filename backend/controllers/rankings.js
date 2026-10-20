@@ -30,6 +30,7 @@ rankingRouter.get('/:id', async (req, res, next) => {
 
 rankingRouter.post('/', async (req, res) => {
     const body = await req.body
+    console.log(body)
 
     const decodedToken = jwt.verify(getTokenFrom(req), process.env.SECRET)
     if(!decodedToken.id){
@@ -60,7 +61,8 @@ rankingRouter.post('/', async (req, res) => {
 })
 
 rankingRouter.delete('/:id', async (req, res) => {
-    await Ranking.findByIdAndDelete(req.params.id)
+    let ranking = await Ranking.findByIdAndDelete(req.params.id)
+    console.log(ranking)
     await User.findByIdAndUpdate(req.body.userId,
         { $pull: { rankings: ranking.id } }
     );

@@ -5,12 +5,7 @@ import BodyRight from "../components/BodyRight"
 import AddFilms from "../components/AddFilms"
 
 
-
-
-
-
-
-const UserProfilePage = ({ movies, user, token}) => {
+const UserProfilePage = ({ movies, user, token, userId }) => {
 
 
   const [userMovies, setUserMovies] = useState([])
@@ -63,7 +58,7 @@ const UserProfilePage = ({ movies, user, token}) => {
       review: newReview,
       movieId: id,
       username: user.username,
-      userId: user.userId
+      userId: user.id
     }
 
     axios.post(
@@ -93,8 +88,10 @@ const UserProfilePage = ({ movies, user, token}) => {
 
   }
 
-  function deleteMovies(id) {
-    axios.delete(`/api/rankings/${id}`)
+
+// add userId to parameters
+  function deleteMovies(id, userId, movieId) {
+    axios.delete(`/api/rankings/${id}`, {data: {userId: userId, movieId: movieId}})
       .then(() => {
         setUserMovies(userMovies.filter(item => item.id !== id))
       })
@@ -107,7 +104,7 @@ const UserProfilePage = ({ movies, user, token}) => {
       <div id="body">
         <ProfileHeader />
         <AddFilms movies={movies} setUserMovies={setUserMovies} userMovies={userMovies} showForm={showForm} setShowForm={setShowForm} newRating={newRating} setNewRating={setNewRating} newReview={newReview} setNewReview={setNewReview} onSubmit={addUserRatingAndReview} setCurrentId={setCurrentId} />
-        <BodyRight user={user} userMovies={userMovies} deleteMovies={deleteMovies} setCurrentId={setCurrentId} setUserMovies={setUserMovies} toggleFilter={toggleFilter} setToggleFilter={setToggleFilter} filter={filter} setFilter={setFilter} setShowForm={setShowForm} onSubmit={addUserRatingAndReview} newRating={newRating} newReview={newReview} setNewRating={setNewRating} setNewReview={setNewReview} searchArr={searchArr} setSearchArr={setSearchArr} searchValue={searchValue} setSearchValue={setSearchValue} toggleSearch={toggleSearch} setToggleSearch={setToggleSearch} />
+        <BodyRight user={user} userMovies={userMovies} deleteMovies={deleteMovies} setCurrentId={setCurrentId} setUserMovies={setUserMovies} toggleFilter={toggleFilter} setToggleFilter={setToggleFilter} filter={filter} setFilter={setFilter} setShowForm={setShowForm} onSubmit={addUserRatingAndReview} newRating={newRating} newReview={newReview} setNewRating={setNewRating} setNewReview={setNewReview} searchArr={searchArr} setSearchArr={setSearchArr} searchValue={searchValue} setSearchValue={setSearchValue} toggleSearch={toggleSearch} setToggleSearch={setToggleSearch} userId={userId}/>
       </div>
     </div>
   )

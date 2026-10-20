@@ -32,6 +32,8 @@ function App() {
   })
   const [token, setToken] = useState(() => {
     return (user) ? `Bearer ${user.token}` : null})
+  
+    const [userId, setUserId] = useState("")
 
   useEffect(() => {
     if (user) {
@@ -70,10 +72,10 @@ function App() {
         <Route path="/movies/:id" element={
           <Movies movies={movies} setMovie={setMovies} />
         } />
-        <Route path="/" element={<HomePage user={user} setUser={setUser} getToken={getToken} />}>
+        <Route path="/" element={<HomePage user={user} setUser={setUser} getToken={getToken}  setUserId={setUserId}  />}>
           <Route path="/aboutme" element={<AboutMe />} />
         </Route>
-        <Route path="/profile" element={<UserProfilePage movies={movies} setMovies={setMovies} setUser={setUser} user={user} token={token}/>} />
+        <Route path="/profile" element={<UserProfilePage movies={movies} setMovies={setMovies} setUser={setUser} user={user} token={token}/>} userId={userId}/>
         <Route path="/movies" element={<MoviesPage movies={movies} setMovies={setMovies} />} />
         <Route path="/users" element={<UsersPage />} />
         <Route path="*" element={<NotFound />} />

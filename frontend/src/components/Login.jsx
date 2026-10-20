@@ -1,9 +1,9 @@
 import loginService from '../services/login'
 
+// set userId
 
 
-
-const Login = ({ setShowLogin, username, setUsername, password, setPassword, user, setUser, getToken}) => {
+const Login = ({ setShowLogin, username, setUsername, password, setPassword, user, setUser, getToken, setUserId}) => {
 
   const handleLogin = async event => {
     event.preventDefault()
@@ -16,8 +16,10 @@ const Login = ({ setShowLogin, username, setUsername, password, setPassword, use
 
       getToken(user.token)
       setUser(user)
+      setUserId(user.userId)
       setUsername('')
       setPassword('')
+      console.log(user)
     } catch {
       console.log('error: wrong credentials')
     }
