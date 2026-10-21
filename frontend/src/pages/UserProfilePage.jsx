@@ -40,7 +40,6 @@ const UserProfilePage = ({ movies, user, token, userId }) => {
   function addUserRatingAndReview(e) {
     e.preventDefault()
     let id = currentId;
-    console.log(token)
     // console.log(user.token)
 
     // let token = `Bearer: ${user.token}`
@@ -65,7 +64,6 @@ const UserProfilePage = ({ movies, user, token, userId }) => {
       `/api/rankings/`, postRequest, config
     )
       .then(res => {
-        console.log(user)
 
         if (userMovies.some(movie => movie.id === res.data.id)) {
 
@@ -97,6 +95,10 @@ const UserProfilePage = ({ movies, user, token, userId }) => {
       })
   }
 
+
+  function test(){
+    console.log("test")
+  }
   
 
   return (
@@ -104,7 +106,7 @@ const UserProfilePage = ({ movies, user, token, userId }) => {
       <div id="body">
         <ProfileHeader />
         <AddFilms movies={movies} setUserMovies={setUserMovies} userMovies={userMovies} showForm={showForm} setShowForm={setShowForm} newRating={newRating} setNewRating={setNewRating} newReview={newReview} setNewReview={setNewReview} onSubmit={addUserRatingAndReview} setCurrentId={setCurrentId} />
-        <BodyRight user={user} userMovies={userMovies} deleteMovies={deleteMovies} setCurrentId={setCurrentId} setUserMovies={setUserMovies} toggleFilter={toggleFilter} setToggleFilter={setToggleFilter} filter={filter} setFilter={setFilter} setShowForm={setShowForm} onSubmit={addUserRatingAndReview} newRating={newRating} newReview={newReview} setNewRating={setNewRating} setNewReview={setNewReview} searchArr={searchArr} setSearchArr={setSearchArr} searchValue={searchValue} setSearchValue={setSearchValue} toggleSearch={toggleSearch} setToggleSearch={setToggleSearch} userId={userId}/>
+        <BodyRight user={user} userMovies={userMovies} deleteMovies={deleteMovies} setCurrentId={setCurrentId} setUserMovies={setUserMovies} toggleFilter={toggleFilter} setToggleFilter={setToggleFilter} filter={filter} setFilter={setFilter} setShowForm={setShowForm} showForm={showForm} onSubmit={test} newRating={newRating} newReview={newReview} setNewRating={setNewRating} setNewReview={setNewReview} searchArr={searchArr} setSearchArr={setSearchArr} searchValue={searchValue} setSearchValue={setSearchValue} toggleSearch={toggleSearch} setToggleSearch={setToggleSearch} userId={userId}/>
       </div>
     </div>
   )

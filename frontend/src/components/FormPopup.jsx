@@ -1,9 +1,11 @@
-const FormPopup = ({ showForm, onSubmit, newRating, setNewRating, newReview, setNewReview }) => {
-  if (showForm === true)
+const FormPopup = ({ showForm, onSubmit, newRating, setNewRating, newReview, setNewReview, formId }) => {
+
+  if (!showForm) return null
+
     return (
       <div>
         <dialog open>
-          <form method="dialog" id="user_review" onSubmit={onSubmit}>
+          <form id={`${formId}`} onSubmit={onSubmit}>
             <label>Review:
               <input value={newReview} onChange={(e) => setNewReview(e.target.value)} />
             </label>
@@ -19,3 +21,4 @@ const FormPopup = ({ showForm, onSubmit, newRating, setNewRating, newReview, set
 }
 
 export default FormPopup
+
