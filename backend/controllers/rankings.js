@@ -83,16 +83,6 @@ rankingRouter.patch('/:id', async (req, res) => {
     updatedRanking.review = review;
     await updatedRanking.save()
 
-    const updatedUserRanking = await User.findByIdAndUpdate(req.params.id)
-    updatedUserRanking.rankings.rating = rating;
-    updatedUserRanking.rankings.review = review;
-    await updatedUserRanking.save()
-
-    const updatedMovieRanking = await Movie.findByIdAndUpdate(req.params.id)
-    updatedMovieRanking.rankings.rating = rating;
-    updatedMovieRanking.rankings.review = review;
-    await updatedMovieRanking.save()
-
     res.json(updatedRanking)
 
 })

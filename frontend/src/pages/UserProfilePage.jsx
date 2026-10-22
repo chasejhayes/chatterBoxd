@@ -22,8 +22,7 @@ const UserProfilePage = ({ movies, user, token, userId }) => {
   const [editFormOn, setEditFormOn] = useState(false)
 
 
-  // the form only renders when either addRankingsForm is on or edit form is on. Onchange/click to film addRankings form turns true, on submit for addReviewandRating, it turns false
-  // when clicking edit button, setEditFormOn turns true, when onSubmit, editEdit form turns false
+
 
   useEffect(() => {
 
@@ -102,11 +101,6 @@ const UserProfilePage = ({ movies, user, token, userId }) => {
   }
 
 
-  function test(e) {
-    e.preventDefault()
-    console.log("test")
-    setEditFormOn(false)
-  }
 
 
   return (
@@ -114,7 +108,7 @@ const UserProfilePage = ({ movies, user, token, userId }) => {
       <div id="body">
         <ProfileHeader />
         <AddFilms movies={movies} setUserMovies={setUserMovies} userMovies={userMovies} showForm={showForm} setShowForm={setShowForm} newRating={newRating} setNewRating={setNewRating} newReview={newReview} setNewReview={setNewReview} onSubmit={addUserRatingAndReview} setCurrentId={setCurrentId} addRankingsFormOn={addRankingsFormOn} editFormOn={editFormOn} setAddRankingsFormOn={setAddRankingsFormOn} />
-        <BodyRight user={user} userMovies={userMovies} deleteMovies={deleteMovies} setCurrentId={setCurrentId} setUserMovies={setUserMovies} toggleFilter={toggleFilter} setToggleFilter={setToggleFilter} filter={filter} setFilter={setFilter} setShowForm={setShowForm} showForm={showForm} onSubmit={test} newRating={newRating} newReview={newReview} setNewRating={setNewRating} setNewReview={setNewReview} searchArr={searchArr} setSearchArr={setSearchArr} searchValue={searchValue} setSearchValue={setSearchValue} toggleSearch={toggleSearch} setToggleSearch={setToggleSearch} userId={userId} editFormOn={editFormOn} setEditFormOn={setEditFormOn} />
+        <BodyRight user={user} userMovies={userMovies} deleteMovies={deleteMovies} setCurrentId={setCurrentId} setUserMovies={setUserMovies} toggleFilter={toggleFilter} setToggleFilter={setToggleFilter} filter={filter} setFilter={setFilter} setShowForm={setShowForm} showForm={showForm} newRating={newRating} newReview={newReview} setNewRating={setNewRating} setNewReview={setNewReview} searchArr={searchArr} setSearchArr={setSearchArr} searchValue={searchValue} setSearchValue={setSearchValue} toggleSearch={toggleSearch} setToggleSearch={setToggleSearch} userId={userId} editFormOn={editFormOn} setEditFormOn={setEditFormOn} currentId={currentId} setUserMovies={setUserMovies} />
       </div>
     </div>
   )
