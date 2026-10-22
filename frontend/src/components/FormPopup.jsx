@@ -1,4 +1,12 @@
-const FormPopup = ({ showForm, onSubmit, newRating, setNewRating, newReview, setNewReview, formId }) => {
+const FormPopup = ({ showForm, onSubmit, newRating, setNewRating, newReview, setNewReview, formId, setView }) => {
+
+  // function handleSubmit(e){
+  //   e.preventDefault()
+  //   onSubmit
+  //   setView
+
+  // }
+
 
   if (!showForm) return null
 

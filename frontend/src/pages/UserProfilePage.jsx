@@ -96,7 +96,8 @@ const UserProfilePage = ({ movies, user, token, userId }) => {
   }
 
 
-  function test(){
+  function test(e){
+    e.preventDefault()
     console.log("test")
   }
   

@@ -13,25 +13,30 @@ const AddFilms = ({ movies, showForm, setShowForm, onSubmit, newRating, setNewRa
       return setShowForm(true)
     }
   }
-  const handleSetId = (e) => {
-    let id = e.target.value
-    setCurrentId(id)
-    setAddRankingsOn(true)
-    handleShowForm(id)
+
+  const handleCloseForm = () => {
+    return setAddRankingsOn(false)
   }
 
-  return (
+const handleSetId = (e) => {
+  let id = e.target.value
+  setCurrentId(id)
+  setAddRankingsOn(true)
+  handleShowForm(id)
+}
 
-    <div>
-      {addRankingsOn && <FormPopup showForm={showForm} newRating={newRating} setNewRating={setNewRating} newReview={newReview} setNewReview={setNewReview} onSubmit={onSubmit} setAddRankingsOn={setAddRankingsOn} formId="newRating" />}
-      <select name="movies" id="movies" onChange={(e) => { handleSetId(e) }}>
-        <option value="">Please select a film</option>
-        {movies.map(item =>
-          <option key={item.id} value={item.id}>{item.title}</option>
-        )}
-      </select>
-    </div>
-  )
+return (
+
+  <div>
+    {addRankingsOn && <FormPopup showForm={showForm} newRating={newRating} setNewRating={setNewRating} newReview={newReview} setNewReview={setNewReview} onSubmit={onSubmit} setView={handleCloseForm} formId="newRating" />}
+    <select name="movies" id="movies" onChange={(e) => { handleSetId(e) }}>
+      <option value="">Please select a film</option>
+      {movies.map(item =>
+        <option key={item.id} value={item.id}>{item.title}</option>
+      )}
+    </select>
+  </div>
+)
 }
 
 export default AddFilms

@@ -1,11 +1,16 @@
 import FormPopup from "./FormPopup"
-import {useState} from 'react'
+import { useState } from 'react'
 
 const MovieDisplay = ({ user, userMovies, deleteMovies, toggleFilter, filter, showForm, setShowForm, onSubmit, newRating, setNewRating, newReview, setNewReview, setCurrentId, toggleSearch, searchArr, userId }) => {
 
   const [viewEditForm, setViewEditForm] = useState(false)
 
-  let displayType = userMovies
+  let displayType = userMovies;
+
+  function handleShowEditForm(){
+    console.log("works")
+    return setViewEditForm(false)
+  }
 
 
 
@@ -25,6 +30,9 @@ const MovieDisplay = ({ user, userMovies, deleteMovies, toggleFilter, filter, sh
 
   }
 
+
+ 
+
   // Need to display the rankings and they each have a delete button
   // rankings need to hold both userID/rankingID/username
   // the delete request needs to send the userID and the ranking ID
@@ -32,7 +40,7 @@ const MovieDisplay = ({ user, userMovies, deleteMovies, toggleFilter, filter, sh
   return (
     <div>
 
-      {viewEditForm && <FormPopup showForm={showForm} newRating={newRating} setNewRating={setNewRating} newReview={newReview} setNewReview={setNewReview} onSubmit={onSubmit} setView={setViewEditForm} formId="edit" />}
+      {viewEditForm && <FormPopup showForm={showForm} newRating={newRating} setNewRating={setNewRating} newReview={newReview} setNewReview={setNewReview} onSubmit={onSubmit} setView={handleShowEditForm} formId="edit" />}
 
       {displayType.map((item) =>
         <li key={item.id}>
