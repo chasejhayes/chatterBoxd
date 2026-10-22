@@ -28,17 +28,11 @@ const MovieDisplay = ({ user, userMovies, deleteMovies, toggleFilter, filter, sh
     axios.patch(
       `/api/rankings/${currentId}`, patchRequest      
     ).then(res => {
-     console.log(res.data.id)
-     console.log(userMovies)
-
      let updated = userMovies.map((movie) => {
-      console.log({...movie})
-      console.log({...res.data})
       return movie.id == res.data.id 
-      ? {...movie, ...res.data}
+      ? {...movie, rating: `${res.data.rating}`, review: `${res.data.review}` }
       : movie
      })
-     console.log(updated)
      setUserMovies(updated)
     }) 
 
