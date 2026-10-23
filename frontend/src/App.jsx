@@ -35,10 +35,13 @@ function App() {
   })
 
   const [userId, setUserId] = useState("")
-  const [viewLogout, setViewLogout] = useState(false)
+  const [viewLogout, setViewLogout] = useState(() => {
+    const loggedUserJSON = window.localStorage.getItem('loggedMediaUser')
+    return loggedUserJSON ? true : false
+  })
 
-  console.log(viewLogout)
-
+ const [showLogin, setShowLogin] = useState(() => {const loggedUserJSON = window.localStorage.getItem('loggedMediaUser')
+    return loggedUserJSON ? false : true})
   useEffect(() => {
     if (user) {
       localStorage.setItem('loggedUserJSON', JSON.stringify(user))
@@ -55,7 +58,9 @@ function App() {
     if (user) {
       console.log(`user logged out`)
       setViewLogout(false)
-      return window.localStorage.clear()
+      setShowLogin(true)
+      window.location.reload()
+      return window.localStorage.clear() 
     }
     return console.log("no user logged in currently")
 
@@ -76,7 +81,7 @@ function App() {
         <Route path="/movies/:id" element={
           <Movies movies={movies} setMovie={setMovies} />
         } />
-        <Route path="/" element={<HomePage user={user} setUser={setUser} getToken={getToken} setUserId={setUserId} viewLogout={viewLogout} setViewLogout={setViewLogout} />}>
+        <Route path="/" element={<HomePage user={user} setUser={setUser} getToken={getToken} setUserId={setUserId} viewLogout={viewLogout} setViewLogout={setViewLogout} showLogin={showLogin} setShowLogin={setShowLogin}/>}>
           <Route path="/aboutme" element={<AboutMe />} />
         </Route>
         <Route path="/profile" element={<UserProfilePage movies={movies} setMovies={setMovies} setUser={setUser} user={user} token={token} />} userId={userId} />

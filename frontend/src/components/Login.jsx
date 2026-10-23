@@ -3,14 +3,16 @@ import loginService from '../services/login'
 // set userId
 
 
-const Login = ({ setShowLogin, username, setUsername, password, setPassword, user, setUser, getToken, setUserId, setViewLogout}) => {
+const Login = ({ setShowLogin, showLogin, username, setUsername, password, setPassword, user, setUser, getToken, setUserId, setViewLogout }) => {
+
+  
 
   const handleLogin = async event => {
     event.preventDefault()
     try {
       const user = await loginService.login({ username, password })
 
-      setViewLogout(true) 
+      setViewLogout(true)
 
       window.localStorage.setItem(
         'loggedMediaUser', JSON.stringify(user)
@@ -21,8 +23,10 @@ const Login = ({ setShowLogin, username, setUsername, password, setPassword, use
       setUserId(user.userId)
       setUsername('')
       setPassword('')
+      setViewLogout(true)
+      setShowLogin(false)
       console.log(user)
-    } catch (error){
+    } catch (error) {
       console.error(error)
     }
     // console.log('test')
@@ -31,6 +35,10 @@ const Login = ({ setShowLogin, username, setUsername, password, setPassword, use
     //   setShowLogin(false) && setViewLogout(true) 
     // }
     // console.log('logging in with', username, password)
+  }
+
+  if (!showLogin){
+    return null
   }
   return (
     <div>
