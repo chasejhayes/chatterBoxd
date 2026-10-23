@@ -31,9 +31,13 @@ function App() {
     return loggedUserJSON ? JSON.parse(loggedUserJSON) : null
   })
   const [token, setToken] = useState(() => {
-    return (user) ? `Bearer ${user.token}` : null})
-  
-    const [userId, setUserId] = useState("")
+    return (user) ? `Bearer ${user.token}` : null
+  })
+
+  const [userId, setUserId] = useState("")
+  const [viewLogout, setViewLogout] = useState(false)
+
+  console.log(viewLogout)
 
   useEffect(() => {
     if (user) {
@@ -44,13 +48,13 @@ function App() {
   }, [user]);
 
   function getToken(newToken) {
-  setToken(`Bearer ${newToken}`)
-  console.log(token)
-}
+    setToken(`Bearer ${newToken}`)
+  }
 
   const handleLogout = () => {
     if (user) {
       console.log(`user logged out`)
+      setViewLogout(false)
       return window.localStorage.clear()
     }
     return console.log("no user logged in currently")
@@ -65,17 +69,17 @@ function App() {
         <Link to="/profile">profile</Link>
         <Link to="/users">users</Link>
         <Link to="/movies">movies</Link>
-        <button onClick={handleLogout}>logout</button>
+        {viewLogout && <button onClick={handleLogout}>logout</button>}
       </div>
 
       <Routes>
         <Route path="/movies/:id" element={
           <Movies movies={movies} setMovie={setMovies} />
         } />
-        <Route path="/" element={<HomePage user={user} setUser={setUser} getToken={getToken}  setUserId={setUserId}  />}>
+        <Route path="/" element={<HomePage user={user} setUser={setUser} getToken={getToken} setUserId={setUserId} viewLogout={viewLogout} setViewLogout={setViewLogout} />}>
           <Route path="/aboutme" element={<AboutMe />} />
         </Route>
-        <Route path="/profile" element={<UserProfilePage movies={movies} setMovies={setMovies} setUser={setUser} user={user} token={token}/>} userId={userId}/>
+        <Route path="/profile" element={<UserProfilePage movies={movies} setMovies={setMovies} setUser={setUser} user={user} token={token} />} userId={userId} />
         <Route path="/movies" element={<MoviesPage movies={movies} setMovies={setMovies} />} />
         <Route path="/users" element={<UsersPage />} />
         <Route path="*" element={<NotFound />} />

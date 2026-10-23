@@ -3,12 +3,14 @@ import loginService from '../services/login'
 // set userId
 
 
-const Login = ({ setShowLogin, username, setUsername, password, setPassword, user, setUser, getToken, setUserId}) => {
+const Login = ({ setShowLogin, username, setUsername, password, setPassword, user, setUser, getToken, setUserId, setViewLogout}) => {
 
   const handleLogin = async event => {
     event.preventDefault()
     try {
       const user = await loginService.login({ username, password })
+
+      setViewLogout(true) 
 
       window.localStorage.setItem(
         'loggedMediaUser', JSON.stringify(user)
@@ -20,11 +22,15 @@ const Login = ({ setShowLogin, username, setUsername, password, setPassword, use
       setUsername('')
       setPassword('')
       console.log(user)
-    } catch {
-      console.log('error: wrong credentials')
+    } catch (error){
+      console.error(error)
     }
-    if (user) { setShowLogin(false) }
-    console.log('logging in with', username, password)
+    // console.log('test')
+    // if (user){ 
+    //   console.log(user)
+    //   setShowLogin(false) && setViewLogout(true) 
+    // }
+    // console.log('logging in with', username, password)
   }
   return (
     <div>
