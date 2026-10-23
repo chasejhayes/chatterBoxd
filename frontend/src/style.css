@@ -6,6 +6,12 @@
     padding: 25px
 }
 
+h1{
+    background-color: mintcream;
+    padding: 0;
+    margin: 0
+}
+
 #body {
     background-color: mintcream;
     /* background-color: aqua; */
@@ -14,6 +20,10 @@
     box-sizing: border-box;
     display: flex;
 
+}
+
+.userList{
+    flex-direction: column;
 }
 
 #body_right{
@@ -35,3 +45,4 @@
 .loginButton{
     align-self: start;
 }
+
