@@ -1,6 +1,5 @@
 
 import {Link} from 'react-router-dom'
-import Users from '../components/Users'
 
 const UsersPage = ({ allUsers }) => {
 

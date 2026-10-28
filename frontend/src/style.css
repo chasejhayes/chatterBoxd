@@ -45,3 +45,6 @@ h1{
     align-self: start;
 }
 
+ul {
+    list-style-type: none;
+}
