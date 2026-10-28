@@ -26,6 +26,5 @@ const Users = ({ allUsers }) => {
   )
 }
 
-// {/* <Link to={`/movies/${movie.id}`}>{movie.title}</Link> */}
 
 export default Users

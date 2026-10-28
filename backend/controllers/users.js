@@ -17,6 +17,39 @@ usersRouter.post('/', async (req, res) => {
     res.status(201).json(savedUser)
 })
 
+usersRouter.patch('/:id', async (req, res) => {
+    const { action, username, userId } = req.body;
+    console.log(action)
+
+    let change
+
+    if (action === 'addFriend') {
+        change = {
+            $push: {
+                friends: req.body
+            }
+        }
+    } else if (action === 'deleteFriend') {
+        change = {
+            $pull: {
+                friends: {
+                    username: username,
+                    userId: userId
+                }
+            }
+        }
+    }
+
+    const result = await User.findByIdAndUpdate(
+        req.params.id, change
+
+    )
+
+    await result.save()
+    console.log(result)
+    res.json(result)
+
+})
 
 
 // usersRouter.get('/', async (req, res) => {
@@ -28,14 +61,15 @@ usersRouter.post('/', async (req, res) => {
 usersRouter.get('/', async (req, res) => {
 
     const users = await User.find({}).populate({
-        path: 'rankings', 
-        select: {review: 1, rating: 1, movieId: 1}, 
-        populate:{
+        path: 'rankings',
+        select: { review: 1, rating: 1, movieId: 1 },
+        populate: {
             path: 'movieId',
             model: 'Movie',
-            select: {title: 1, director: 1}
+            select: { title: 1, director: 1 }
 
-    }})
+        }
+    })
     res.json(users)
 })
 

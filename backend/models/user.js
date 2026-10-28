@@ -8,10 +8,17 @@ const userSchema = new mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Ranking',
             movieId: [
-                {type: mongoose.Schema.Types.ObjectId,
+                {
+                    type: mongoose.Schema.Types.ObjectId,
                     ref: 'Movie'
                 }
             ]
+        }
+    ],
+    friends: [
+        {
+            username: String,
+            userId: String
         }
     ]
 })
