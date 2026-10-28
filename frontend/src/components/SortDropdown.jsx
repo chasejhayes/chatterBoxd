@@ -1,5 +1,4 @@
 const SortDropdown = ({ setUserMovies, userMovies }) => {
-  console.log(userMovies)
 
   function handleSort(e) {
     let selected = e.target.value
