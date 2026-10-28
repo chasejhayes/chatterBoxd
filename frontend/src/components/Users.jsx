@@ -21,22 +21,6 @@ const Users = ({ allUsers }) => {
         )}
       </ul>
     </div>
-    // <div id="body">
-    //   <ul>
-    //     <h2>{item.title}</h2>
-    //     <p>Directed By: {item.director}</p>
-    //     <h3>Description</h3>
-    //     <p>{item.description}</p>
-    //     <h4>Reviews</h4>
-    //     <ul>
-    //       {item.rankings.map((ranking) =>
-    //         <li key={ranking.id}>
-    //           <p>{ranking.rating}</p>
-    //           <p>{ranking.review}</p>
-    //         </li>)}
-    //     </ul>
-    //   </ul>
-    // </div>
   )
 }
 
