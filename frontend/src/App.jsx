@@ -28,7 +28,7 @@ import UserProfilePage from './pages/UserProfilePage'
 
 function App() {
   const { movies, setMovies } = useMovies();
-  const {allUsers, setAllUsers} = useUsers();
+  const { allUsers, setAllUsers } = useUsers();
   const [user, setUser] = useState(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedMediaUser')
     return loggedUserJSON ? JSON.parse(loggedUserJSON) : null
@@ -100,7 +100,7 @@ function App() {
 
 
 
-        <Route path="/users" element={<UsersPage />} />
+        <Route path="/users" element={<UsersPage allUsers={allUsers} setAllUsers={setAllUsers} />} />
 
         <Route path="/users/:id" element={
           <Users allUsers={allUsers} setAllUsers={setAllUsers} />

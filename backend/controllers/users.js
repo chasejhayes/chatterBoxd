@@ -19,11 +19,28 @@ usersRouter.post('/', async (req, res) => {
 
 
 
+// usersRouter.get('/', async (req, res) => {
+
+//     const users = await User.find({}).populate('rankings', {review: 1, rating: 1, movieId: 1}).populate('movieId')
+//     res.json(users)
+// })
+
 usersRouter.get('/', async (req, res) => {
 
-    const users = await User.find({}).populate('rankings', {review: 1, rating: 1})
+    const users = await User.find({}).populate({
+        path: 'rankings', 
+        select: {review: 1, rating: 1, movieId: 1}, 
+        populate:{
+            path: 'movieId',
+            model: 'Movie',
+            select: {title: 1, director: 1}
+
+    }})
     res.json(users)
 })
+
+
+
 
 usersRouter.get('/:id', async (req, res, next) => {
     const user = await User.findById(req.params.id)

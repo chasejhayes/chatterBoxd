@@ -1,7 +1,9 @@
 import { useParams } from 'react-router-dom'
 const Movies = ({ movies }) => {
   const id = useParams().id
+  console.log(id)
   const item = movies.find(n => n.id === id)
+  console.log(item)
 
   if (!item) {
     return <div>Loading...</div>

@@ -2,14 +2,22 @@ import { useParams } from 'react-router-dom'
 const Users = ({ allUsers }) => {
   const id = useParams().id
   const item = allUsers.find(n => n.id === id)
+  console.log(item)
 
   if (!item) {
     return <div>Loading...</div>
   }
-  console.log(item)
+
 
   return (
-    <div>{item.username}</div>
+    <div id="body">
+        <h1>{item.username}</h1>
+        <ul>
+            {item.rankings.map((ranking) =>
+                <li key={ranking.id}>{ranking.rating}</li>
+            )}
+        </ul>
+    </div>
     // <div id="body">
     //   <ul>
     //     <h2>{item.title}</h2>
