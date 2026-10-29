@@ -103,7 +103,7 @@ function App() {
         <Route path="/users" element={<UsersPage allUsers={allUsers} setAllUsers={setAllUsers} />} />
 
         <Route path="/users/:id" element={
-          <Users allUsers={allUsers} setAllUsers={setAllUsers} />
+          <Users allUsers={allUsers} setAllUsers={setAllUsers} user={user}/>
         } />
 
 

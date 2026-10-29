@@ -41,7 +41,9 @@ h1{
     flex-direction: column;
 }
 
-.loginButton{
+.loginButton,
+#friendButton
+{
     align-self: start;
 }
 
